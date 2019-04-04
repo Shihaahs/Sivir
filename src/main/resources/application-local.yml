@@ -16,9 +16,9 @@ spring:
 
   # MySQL
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/db_sivir?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://106.13.87.50:3306/db_sivir?useUnicode=true&characterEncoding=utf-8
     username: root
-    password: 123456
+    password: 922900
     driver-class-name: com.mysql.jdbc.Driver
     druid:
       initial-size: 5
