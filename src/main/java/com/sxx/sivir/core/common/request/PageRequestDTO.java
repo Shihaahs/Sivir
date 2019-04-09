@@ -8,35 +8,22 @@ import java.io.Serializable;
 @Data
 public class PageRequestDTO implements Serializable {
 
-
     /**
-     * 店铺名称查询
-     */
-    private String userName;
-    /**
-     * 店铺名称查询
-     */
-    private String productManufactureName;
-    /**
-     * 店铺id查询
+     * 用户名
      */
     private Long userId;
     /**
-     * 商品名称查询
+     * 用户名
      */
-    private String productName;
+    private String userName;
     /**
-     * 是否上架，0-未上架，1-已上架，2-未处理(默认)
+     * 用户手机
      */
-    private Integer isShelf;
+    private String phone;
     /**
-     * 是否通过注册审核，0-已通过，1-未通过，2-未处理(默认)
+     * 用户角色
      */
-    private Integer isApproval;
-    /**
-     * 是否通过钱包流水审核，0-已通过，1-未通过，2-未处理(默认)
-     */
-    private Integer walletOrderState;
+    private String permission;
     /**
      * 开始时间
      */

@@ -19,7 +19,7 @@ public class Car extends BaseModel {
      * 主键，自增长
      */
     @TableId(value = "car_id", type = IdType.AUTO)
-    private Integer carId;
+    private Long carId;
     /**
      * 车牌号
      */

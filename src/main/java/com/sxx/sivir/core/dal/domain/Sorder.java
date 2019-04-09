@@ -21,7 +21,7 @@ public class Sorder extends BaseModel {
      * 主键，自增长
      */
     @TableId(value = "order_id", type = IdType.AUTO)
-    private Integer orderId;
+    private Long orderId;
     /**
      * 订单号
      */

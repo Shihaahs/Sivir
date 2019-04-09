@@ -3,34 +3,71 @@ package com.sxx.sivir.core.common.constant;
 
 public class SivirURL {
 
-    public static final String LISSANDRA_LOGIN = "/api/login.json";
-    public static final String LISSANDRA_LOGOUT = "/api/logout.json";
-    public static final String LISSANDRA_REGISTRE = "/api/register.json";
-
-
-    public static final String MVO_LIST_ORDER_BY_PAGE = "/api/mvo/list/order/all.json";
-    public static final String MVO_LIST_PRODUCT_BY_PAGE = "/api/mvo/list/product/all.json";
-    public static final String MVO_ADD_PRODUCT = "/api/mvo/add/product.json";
-    public static final String MVO_DELETE_PRODUCT_BY_ID = "/api/mvo/delete/product.json";
-    public static final String MVO_UPDATE_PRODUCT_INFO_BY_ID = "/api/mvo/update/product/info.json";
-    public static final String MVO_UPDATE_PRODUCT_IS_SHELF_BY_ID = "/api/mvo/update/product/isShelf.json";
-
-
-
-    public static final String BVO_LIST_PRODUCT_BY_PAGE = "/api/bvo/list/product/all.json";
-    public static final String BVO_LIST_WALLET_ORDER_BY_USER = "/api/bvo/list/wallet/order/user.json";
-    public static final String BVO_GET_WALLET_BALANCE_BY_USER = "/api/bvo/get/wallet/balance/user.json";
-    public static final String BVO_WALLET_ORDER_RECHARGE = "/api/bvo/wallet/order/recharge.json";
-    public static final String BVO_WALLET_ORDER_WITHDRAW = "/api/bvo/wallet/order/withdraw.json";
-
-    public static final String ADMIN_LIST_CHECK_REGISTER = "/api/admin/list/check/register.json";
-    public static final String ADMIN_IS_APPROVAL_REGISTER = "/api/admin/is/approval/register.json";
-    public static final String ADMIN_LIST_CHECK_WALLET_ORDER = "/api/admin/list/check/walletOrder.json";
-    public static final String ADMIN_UPDATE_WALLET_ORDER_STATE = "/api/admin/update/walletOrderState.json";
-
-
-
+    //系统接口
+    public static final String SIVIR_LOGIN = "/api/login.json";
+    public static final String SIVIR_LOGOUT = "/api/logout.json";
+    public static final String SIVIR_REGISTRE = "/api/register.json";
+    public static final String TO_LOGIN = "/api/to/login";
+    public static final String TO_INDEX = "/api/to/index";
     public static final String PUBLIC_FIND_USER = "/api/public/find/user.json";
+
+
+    /**
+     * 客户接口
+     */
+    public static final String CUSTOMER_GET_ALL_SORDER = "/api/customer/getAllSorder.json";
+    public static final String CUSTOMER_ADD_SORDER = "/api/customer/addSorder.json";
+    public static final String CUSTOMER_CANCEL_SORDER = "/api/customer/cancelSorder.json";
+
+
+    /**
+     * 快递员接口
+     */
+    public static final String TRANS_GET_RECEIVED_SORDER = "/api/trans/getReceivedSorder.json";
+    public static final String TRANS_UPDATE_RECEIVED_SORDER_INFO = "/api/trans/updateReceivedSorder.json";
+    public static final String TRANS_GET_SEND_SORDER = "/api/trans/getSendSorder.json";
+    public static final String TRANS_UPDATE_SEND_SORDER_INFO = "/api/trans/updateSendSorder.json";
+
+
+    /**
+     * 管理员接口 - 用户管理
+     */
+    public static final String ADMIN_ADD_USER = "/api/admin/addUser.json";
+    public static final String ADMIN_DELETE_USER = "/api/admin/deleteUser.json";
+    public static final String ADMIN_UPDATE_USER = "/api/admin/updateUser.json";
+    public static final String ADMIN_GET_ALL_USER = "/api/admin/getAllUser.json";
+
+    /**
+     * 管理员接口 - 订单管理
+     */
+    public static final String ADMIN_DELETE_SORDER = "/api/admin/deleteSorder.json";
+    public static final String ADMIN_UPDATE_SORDER = "/api/admin/updateSorder.json";
+    public static final String ADMIN_GET_ALL_SORDER = "/api/admin/getAllSorder.json";
+
+    /**
+     * 管理员接口 - 区域管理
+     */
+    public static final String ADMIN_ADD_REGION = "/api/admin/addRegion.json";
+    public static final String ADMIN_DELETE_REGION = "/api/admin/deleteRegion.json";
+    public static final String ADMIN_UPDATE_REGION = "/api/admin/updateRegion.json";
+    public static final String ADMIN_GET_ALL_REGION = "/api/admin/getAllRegion.json";
+
+    /**
+     * 管理员接口 - 存储配送管理
+     */
+    public static final String ADMIN_ADD_CAR = "/api/admin/addCar.json";
+    public static final String ADMIN_DELETE_CAR = "/api/admin/deleteCar.json";
+    public static final String ADMIN_UPDATE_CAR = "/api/admin/updateCar.json";
+    public static final String ADMIN_GET_ALL_CAR = "/api/admin/getAllCar.json";
+
+    /**
+     * 管理员接口 - 业务统一生成报表
+     */
+    public static final String ADMIN_GET_BUSINESS_REPORT = "/api/admin/getBusinessReport.json";
+
+
+
+
 
 
 
