@@ -56,3 +56,10 @@ swagger:
   contact:
     name: 上星星
     email: 1419903014@qq.com
+
+#logging
+logging:
+  level:
+    com:
+      sxx:
+        sivir: DEBUG
