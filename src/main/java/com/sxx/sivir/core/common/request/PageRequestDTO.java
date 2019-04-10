@@ -2,6 +2,7 @@ package com.sxx.sivir.core.common.request;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 
@@ -35,10 +36,12 @@ public class PageRequestDTO implements Serializable {
     /**
      *当前页码
      */
+    @NotNull
     private Integer pageCurrent;
     /**
      *当前页上的记录数
      */
+    @NotNull
     private Integer pageSize;
     /**
      *总记录数

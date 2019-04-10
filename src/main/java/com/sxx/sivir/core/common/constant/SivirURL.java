@@ -45,15 +45,24 @@ public class SivirURL {
     public static final String ADMIN_GET_ALL_SORDER = "/api/admin/getAllSorder.json";
 
     /**
-     * 管理员接口 - 区域管理
+     * 管理员接口 - 区域管理 - 配置区域内的快递员和车辆
      */
-    public static final String ADMIN_ADD_REGION = "/api/admin/addRegion.json";
-    public static final String ADMIN_DELETE_REGION = "/api/admin/deleteRegion.json";
-    public static final String ADMIN_UPDATE_REGION = "/api/admin/updateRegion.json";
-    public static final String ADMIN_GET_ALL_REGION = "/api/admin/getAllRegion.json";
+    public static final String ADMIN_ADD_REGION_INFO = "/api/admin/addRegionInfo.json";
+    public static final String ADMIN_DELETE_REGION_INFO = "/api/admin/deleteRegionInfo.json";
+    public static final String ADMIN_UPDATE_REGION_INFO = "/api/admin/updateRegionInfo.json";
+
+    public static final String ADMIN_GET_ALL_REGION_INFO = "/api/admin/getAllRegionInfo.json";
 
     /**
-     * 管理员接口 - 存储配送管理
+     * 管理员接口 - 配送管理 - 给订单安排运输的快递员和车辆
+     */
+    public static final String ADMIN_ADD_SORDER_INFO = "/api/admin/addSorderInfo.json";
+    public static final String ADMIN_DELETE_SORDER_INFO = "/api/admin/deleteSorderInfo.json";
+    public static final String ADMIN_UPDATE_SORDER_INFO = "/api/admin/updateSorderInfo.json";
+    public static final String ADMIN_GET_ALL_SORDER_INFO = "/api/admin/getAllSorderInfo.json";
+
+    /**
+     * 管理员接口 - 存储管理 - 对存储的车辆进行管理
      */
     public static final String ADMIN_ADD_CAR = "/api/admin/addCar.json";
     public static final String ADMIN_DELETE_CAR = "/api/admin/deleteCar.json";

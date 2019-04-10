@@ -9,6 +9,7 @@ import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,27 +33,27 @@ public class TransController {
 
     @ResponseBody
     @RequestMapping(value = TRANS_GET_RECEIVED_SORDER, method = RequestMethod.POST)
-    public APIResult<PageResult<Sorder>> getReceivedSorder(PageRequestDTO pageRequestDTO){
+    public APIResult<PageResult<Sorder>> getReceivedSorder(@RequestBody PageRequestDTO pageRequestDTO){
         return APIResult.ok(transService.getReceivedSorderByUserId(pageRequestDTO));
     }
 
     @ResponseBody
     @RequestMapping(value = TRANS_UPDATE_RECEIVED_SORDER_INFO, method = RequestMethod.POST)
-    public APIResult<Integer> updateReceivedSorder(Sorder sorder){
+    public APIResult<Integer> updateReceivedSorder(@RequestBody Sorder sorder){
         return APIResult.ok(transService.updateReceivedSorder(sorder));
     }
 
     @ResponseBody
     @RequestMapping(value = TRANS_GET_SEND_SORDER, method = RequestMethod.POST)
-    public APIResult<PageResult<Sorder>> getSendSorder(PageRequestDTO pageRequestDTO){
+    public APIResult<PageResult<Sorder>> getSendSorder(@RequestBody PageRequestDTO pageRequestDTO){
         return APIResult.ok(transService.getSendSorderByUserId(pageRequestDTO));
     }
 
     @ResponseBody
     @RequestMapping(value = TRANS_UPDATE_SEND_SORDER_INFO, method = RequestMethod.POST)
-    public APIResult<Integer> updateSendSorder(Sorder sorder){
+    public APIResult<Integer> updateSendSorder(@RequestBody Sorder sorder){
         return APIResult.ok(transService.updateSendSorder(sorder));
     }
 
-    
+
 }

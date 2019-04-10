@@ -15,4 +15,21 @@
         <sql id="Base_Column_List">
        parent_id,region_id,region_parent_id,region_name,region_type
         </sql>
+
+
+    <select id="getRegionIdWithCarOrTrans" resultType="long" >
+        SELECT
+            car_region_id as region_id
+        FROM
+            car
+        WHERE
+            car_region_id <![CDATA[ <> ]]> 0
+        UNION
+        SELECT
+            trans_region_id as region_id
+        FROM
+            user
+        WHERE
+             trans_region_id <![CDATA[ <> ]]> 0
+    </select>
 </mapper>
