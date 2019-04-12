@@ -56,7 +56,7 @@ public class SivirURL {
     /**
      * 管理员接口 - 配送管理 - 给订单安排运输的快递员和车辆
      */
-    public static final String ADMIN_ADD_SORDER_INFO = "/api/admin/addSorderInfo.json";
+    public static final String ADMIN_ARRANGE_SORDER_INFO = "/api/admin/arrangeSorderInfo.json";
     public static final String ADMIN_DELETE_SORDER_INFO = "/api/admin/deleteSorderInfo.json";
     public static final String ADMIN_UPDATE_SORDER_INFO = "/api/admin/updateSorderInfo.json";
     public static final String ADMIN_GET_ALL_SORDER_INFO = "/api/admin/getAllSorderInfo.json";
