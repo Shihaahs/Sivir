@@ -3,12 +3,19 @@ package com.sxx.sivir.core.common.constant;
 
 public class SivirURL {
 
-    //系统接口
+    /**
+     * 公共接口
+     */
+    public static final String PROVIDE_PROVINCE_DATA = "/public/provideProvinceData.json";
+    public static final String PROVIDE_CITY_DATA = "/public/provideCityData.json";
+    public static final String PROVIDE_COUNTRY_DATA = "/public/provideCountryData.json";
+
+    /**
+     * 系统接口
+     */
     public static final String SIVIR_LOGIN = "/api/login.json";
     public static final String SIVIR_LOGOUT = "/api/logout.json";
-    public static final String SIVIR_REGISTRE = "/api/register.json";
-    public static final String TO_LOGIN = "/api/to/login";
-    public static final String TO_INDEX = "/api/to/index";
+    public static final String SIVIR_REGISTER = "/api/register.json";
     public static final String PUBLIC_FIND_USER = "/api/public/find/user.json";
 
 

@@ -28,10 +28,10 @@ public class Sorder extends BaseModel {
     @TableField("order_no")
     private String orderNo;
     /**
-     * 订单发送者id
+     * 订单发送者手机
      */
-    @TableField("order_sender_id")
-    private Long orderSenderId;
+    @TableField("order_sender_phone")
+    private String orderSenderPhone;
     /**
      * 订单发送者
      */
@@ -43,10 +43,10 @@ public class Sorder extends BaseModel {
     @TableField("order_sender_position")
     private String orderSenderPosition;
     /**
-     * 订单接收者id
+     * 订单接收者手机
      */
-    @TableField("order_receiver_id")
-    private Long orderReceiverId;
+    @TableField("order_receiver_phone")
+    private Long orderReceiverPhone;
     /**
      * 订单接收者
      */
@@ -110,5 +110,11 @@ public class Sorder extends BaseModel {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @TableField("gmt_modified")
     private Date gmtModified;
+
+    /**
+     * 订单下单人id
+     */
+    @TableField("order_owner_id")
+    private Long orderOwnerId;
 
 }

@@ -75,7 +75,7 @@ public class LoginRegisterController {
 
     @ApiOperation(value = "注册", notes = "注册")
     @ResponseBody
-    @RequestMapping(value = SIVIR_REGISTRE, method = RequestMethod.POST)
+    @RequestMapping(value = SIVIR_REGISTER, method = RequestMethod.POST)
     public APIResult register(@RequestBody User user) {
         if (null == user.getPhone() || user.getPhone().isEmpty()) {
             log.info("register -> 用户注册失败，未检测到手机号 ");
@@ -109,15 +109,10 @@ public class LoginRegisterController {
         return APIResult.error(NO_LOGIN_USER.getCode(), NO_LOGIN_USER.getMessage());
     }
 
-    @RequestMapping(value = TO_LOGIN, method = RequestMethod.GET)
-    public String toLogin() {
-        return "login";
-    }
-
-    @RequestMapping(value = TO_INDEX, method = RequestMethod.GET)
-    public ModelAndView toIndex() {
-        return new ModelAndView(new RedirectView("http://127.0.0.1:8000"));
-    }
+//    @RequestMapping(value = TO_INDEX, method = RequestMethod.GET)
+//    public ModelAndView toIndex() {
+//        return new ModelAndView(new RedirectView("http://127.0.0.1:8000"));
+//    }
 
 
 }

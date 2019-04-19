@@ -2,29 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sxx.sivir.core.dal.dao.SorderDao">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="com.sxx.sivir.core.dal.domain.Sorder">
-                    <id column="order_id" property="orderId"/>
-                    <result column="order_no" property="orderNo"/>
-                    <result column="order_sender_id" property="orderSenderId"/>
-                    <result column="order_sender_name" property="orderSenderName"/>
-                    <result column="order_sender_position" property="orderSenderPosition"/>
-                    <result column="order_receiver_id" property="orderReceiverId"/>
-                    <result column="order_receiver_name" property="orderReceiverName"/>
-                    <result column="order_receiver_position" property="orderReceiverPosition"/>
-                    <result column="order_trans_id" property="orderTransId"/>
-                    <result column="order_trans_name" property="orderTransName"/>
-                    <result column="order_car_id" property="orderCarId"/>
-                    <result column="order_car_no" property="orderCarNo"/>
-                    <result column="order_region_id" property="orderRegionId"/>
-                    <result column="order_region_name" property="orderRegionName"/>
-                    <result column="order_type" property="orderType"/>
-                    <result column="is_delete" property="isDelete"/>
-                    <result column="gmt_create" property="gmtCreate"/>
-                    <result column="gmt_modified" property="gmtModified"/>
-        </resultMap>
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
-       order_id,order_no,order_sender_id,order_sender_name,order_sender_position,order_receiver_id,order_receiver_name,order_receiver_position,order_trans_id,order_trans_name,order_car_id,order_car_no,order_region_id,order_region_name,order_type,is_delete,gmt_create,gmt_modified
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.sxx.sivir.core.dal.domain.Sorder">
+        <id column="order_id" property="orderId"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="order_sender_phone" property="orderSenderPhone"/>
+        <result column="order_sender_name" property="orderSenderName"/>
+        <result column="order_sender_position" property="orderSenderPosition"/>
+        <result column="order_receiver_phone" property="orderReceiverPhone"/>
+        <result column="order_receiver_name" property="orderReceiverName"/>
+        <result column="order_receiver_position" property="orderReceiverPosition"/>
+        <result column="order_trans_id" property="orderTransId"/>
+        <result column="order_trans_name" property="orderTransName"/>
+        <result column="order_car_id" property="orderCarId"/>
+        <result column="order_car_no" property="orderCarNo"/>
+        <result column="order_region_id" property="orderRegionId"/>
+        <result column="order_region_name" property="orderRegionName"/>
+        <result column="order_type" property="orderType"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+        <result column="order_owner_id" property="orderOwnerId"/>
+
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+       order_id,order_no,order_sender_phone,order_sender_name,order_sender_position,order_receiver_phone,order_receiver_name,order_receiver_position,order_trans_id,order_trans_name,order_car_id,order_car_no,order_region_id,order_region_name,order_type,is_delete,gmt_create,gmt_modified
         </sql>
 </mapper>

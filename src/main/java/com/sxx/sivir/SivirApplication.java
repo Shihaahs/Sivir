@@ -21,7 +21,7 @@ public class SivirApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SivirApplication.class, args);
-        logger.info("--- Sivir started ---> http://localhost:8070/");
+        logger.info("--- Sivir started ---> http://localhost:8070/api/to/login");
         logger.info("--- Swagger is online ---> http://localhost:8070/swagger-ui.html");
     }
 

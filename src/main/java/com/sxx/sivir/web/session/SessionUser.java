@@ -18,6 +18,7 @@ public class SessionUser {
 
     //当前登录用户
     private User currentUser;
+
     @Autowired
     private TokenHelper tokenHelper;
 
