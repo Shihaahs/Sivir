@@ -114,11 +114,10 @@ var fillTable = function ($form, data) {
         }
     }
     //删除分页插件
-    $("#table_info").remove();
-    $("#table_paginate").remove();
-    $("#table_length").css({"display": "none"});
-    $("#table_filter").css({"display": "none"});
-
+    // $("#table_info").remove();
+    // $("#table_paginate").remove();
+    // $("#table_length").css({"display": "none"});
+    // $("#table_filter").css({"display": "none"});
 
 };
 
