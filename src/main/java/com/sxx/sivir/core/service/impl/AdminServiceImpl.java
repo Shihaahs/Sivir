@@ -70,7 +70,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Integer addUser(User user) {
-        return userManager.insert(user);
+        if (null == user.getPhone() || user.getPhone().isEmpty()) {
+            log.error("新增用户未检测到手机号");
+            return 0;
+        }
+        int count = userManager.selectCount(new EntityWrapper<User>().eq("phone", user.getPhone()));
+        if (count == 0) {
+            return userManager.insert(user);
+        }
+        return 2;
     }
 
     @Override
@@ -81,6 +89,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Integer deleteUser(User user) {
         return userManager.deleteById(user.getUserId());
+    }
+
+    @Override
+    public User getUserById(User user) {
+        if (null == user.getUserId() || user.getUserId().equals(0L)) {
+            log.error("AdminServiceImpl - getUserById -> 根据id获取用户信息， id为空");
+            return new User();
+        }
+        return userManager.selectOne(user);
     }
 
     /**
@@ -107,6 +124,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Integer deleteSorder(Sorder sorder) {
         return sorderManager.deleteById(sorder.getOrderId());
+    }
+
+    @Override
+    public Sorder getSorderById(Sorder sorder) {
+        if (null == sorder.getOrderId() || sorder.getOrderId().equals(0L)) {
+            log.error("AdminServiceImpl - getSorderById -> 根据id获取订单信息， id为空");
+            return new Sorder();
+        }
+        return sorderManager.selectOne(sorder);
     }
 
 

@@ -20,11 +20,11 @@
     <script type="text/javascript" src="/static/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>订单管理</title>
+    <title>用户管理</title>
 </head>
 <body>
-<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span
-        class="c-gray en">&gt;</span> 订单管理 <a id="refresh" class="btn btn-success radius r"
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理 <span
+        class="c-gray en">&gt;</span> 用户管理 <a id="refresh" class="btn btn-success radius r"
                                               style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -32,9 +32,9 @@
     <div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
 			<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
-			<a class="btn btn-primary radius" data-title="下订单" data-href="customer-sorder-add"
-               onclick="addCustomerSorder(this)" href="javascript:;">
-				<i class="Hui-iconfont">&#xe600;</i> 下订单
+			<a class="btn btn-primary radius" data-title="下订单"
+               onclick="addUser(this)" href="javascript:;">
+				<i class="Hui-iconfont">&#xe600;</i> 新增用户
 			</a>
 		</span>
         <span class="r">共有数据：<strong id="pageCount"></strong> 条</span></div>
@@ -44,15 +44,11 @@
             <thead>
             <tr class="text-c">
                 <th width="30">序号</th>
-                <th width="120" id="orderNo">订单编号</th>
-                <th width="80" id="orderType">订单状态</th>
-                <th width="80" id="orderSenderName">寄件人</th>
-                <th width="250" id="orderSenderPosition">寄件地址</th>
-                <th width="80" id="orderReceiverName">收件人</th>
-                <th width="250" id="orderReceiverPosition">收件地址</th>
-                <th width="100" id="orderTransName">快递员</th>
-                <th width="120" id="orderCarNo">快递车辆</th>
-                <th width="180" id="orderRegionName">所在地</th>
+                <th width="80" >用户名称</th>
+                <th width="120" >用户密码</th>
+                <th width="180" >用户手机号</th>
+                <th width="80" >用户角色</th>
+                <th width="200" >修改时间</th>
                 <th width="30">操作</th>
             </tr>
             </thead>
@@ -87,11 +83,11 @@
         table = $("#table").DataTable({
             "aaSorting": [[0, "asc"]],//属性'aaSorting':初始化表格的时候，选择以怎样的规则排序 asc - 顺， desc - 逆
             "aoColumnDefs": [
-                {"orderable": false, "aTargets": [1,4,6,9, 10]}// 制定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
+                {"orderable": false, "aTargets": [2,3,6]}// 制定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
             ],
             "keys": true,
             "bProcessing": false, //是否显示加载
-            "sAjaxSource": '../customer/getAllSorder.json', //请求资源路径,即是"sAjaxSource"
+            "sAjaxSource": '../admin/getAllUser.json', //请求资源路径,即是"sAjaxSource"
             "serverSide": false, //开启服务器处理模式
             "fnServerData": function (sSource, aoData, fnCallback) {    //fnServerData : 路径 参数 回调函数
                 $.ajax({
@@ -111,37 +107,26 @@
                         return ++index;
                     }
                 },
-                {data: "orderNo"},
-                {data: "orderType", //状态
+                {data: "userName"},
+                {data: "password"},
+                {data: "phone"},
+                {data: "permission", //状态
                     render: function (data, type, full, meta) {
                         switch (data) {
                             case 0:
-                                return '待揽件';
+                                return '管理员';
                             case 1:
-                                return '已通知快递员';
+                                return '快递员';
                             case 2:
-                                return '快递员已揽件';
-                            case 3:
-                                return '在途';
-                            case 4:
-                                return '配送中';
-                            case 5:
-                                return '已完成';
-                            case 9:
-                                return '作废';
+                                return '客户';
                         }
                     }
                 },
-                {data: "orderSenderName"},
-                {data: "orderSenderPosition"},
-                {data: "orderReceiverName"},
-                {data: "orderReceiverPosition"},
-                {data: "orderTransName"},
-                {data: "orderCarNo"},
-                {data: "orderRegionName"},
-                {data: "orderId",       //操作
+                {data: "gmtModified"},
+                {data: "userId",       //操作
                     render: function (data, type, full, meta) {
-                        return '<a title="删除" href="javascript:;" onclick="deleteCustomerSorder(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a> ';
+                        return '<a style="text-decoration:none" class="ml-5" onClick="updateUser(' + data + ')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> ' +
+                        '<a title="删除" href="javascript:;" onclick="deleteUser(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a> ';
                     }
                 }
             ]
@@ -151,36 +136,49 @@
 
 
     /* 跳转新增页面 */
-    function addCustomerSorder() {
+    function addUser() {
         layer.open({
             type: 2,
             area: ['800px', '500px'],
             fix: false, //不固定
             maxmin: true,
             shade: 0.4,
-            title: "新增订单",
-            content: '../../api/to/customer-sorder-add',
+            title: "新增用户",
+            content: '../../api/to/admin-user-add'
         });
     }
 
+    function updateUser(id) {
+        layer.open({
+            type: 2,
+            area: ['800px', '500px'],
+            fix: false, //不固定
+            maxmin: true,
+            shade: 0.4,
+            title: "修改用户",
+            content: '../../api/to/admin-user-update?userId=' + id
+        });
+    }
+
+
+
     /*取消订单*/
-    function deleteCustomerSorder(obj, id) {
-        alert("id: " + id);
-        var sorder = {
-            "orderId": id
+    function deleteUser(obj, id) {
+        var user = {
+            "userId": id
         };
 
-        layer.confirm('确认要取消订单吗？', function () {
+        layer.confirm('确认要删除该用户吗？', function () {
             $.ajax({
                 type: 'POST',
-                url: '../customer/cancelSorder.json',
-                data: JSON.stringify(sorder),
+                url: '../admin/deleteUser.json',
+                data: JSON.stringify(user),
                 dataType: 'json',
                 contentType: "application/json;charset=utf-8",
                 success: function (data) {
                     $(obj).parents("tr").remove();
                     $("#refresh i").click();
-                    layer.msg('订单已取消!', {icon: 1, time: 1000});
+                    layer.msg('用户已删除!', {icon: 1, time: 1000});
                 },
                 error: function (data) {
                     console.log(data.msg);

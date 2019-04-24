@@ -43,6 +43,7 @@ public class SivirURL {
     public static final String ADMIN_DELETE_USER = "/api/admin/deleteUser.json";
     public static final String ADMIN_UPDATE_USER = "/api/admin/updateUser.json";
     public static final String ADMIN_GET_ALL_USER = "/api/admin/getAllUser.json";
+    public static final String ADMIN_GET_USER_BY_ID = "/api/admin/getUserById.json";
 
     /**
      * 管理员接口 - 订单管理
@@ -50,6 +51,8 @@ public class SivirURL {
     public static final String ADMIN_DELETE_SORDER = "/api/admin/deleteSorder.json";
     public static final String ADMIN_UPDATE_SORDER = "/api/admin/updateSorder.json";
     public static final String ADMIN_GET_ALL_SORDER = "/api/admin/getAllSorder.json";
+    public static final String ADMIN_GET_SORDER_BY_ID = "/api/admin/getSorderById.json";
+
 
     /**
      * 管理员接口 - 区域管理 - 配置区域内的快递员和车辆

@@ -20,11 +20,17 @@
     <script type="text/javascript" src="/static/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>新增订单</title>
+    <title>修改订单</title>
 </head>
 <body>
 <article class="page-container">
-    <form class="form form-horizontal" id="form-customer-sorder-add">
+    <form class="form form-horizontal" id="form-admin-sorder-update">
+        <div class="row cl">
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" id="orderId" style="display: none"
+                       name="orderId">
+            </div>
+        </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>寄件人：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -100,7 +106,6 @@
                        name="orderReceiverPosition" style="width: 46%;height:33px ;display: inline-block; float: right">
             </div>
         </div>
-
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
@@ -122,20 +127,49 @@
 <script type="text/javascript" src="/static/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="/static/fillFrom.js"></script>
 <script type="text/javascript">
-
-    var currentRegion = {
-        orderRegionName: '',
-        orderRegionId: ''
-    };
-
     $(function () {
+
+        var url = location.search; //获取url中"?“符后的字串
+        if (url.indexOf("?") !== -1) { //判断是否有参数
+            strs = url.split("="); //用等号进行分隔 （因为知道只有一个参数 所以直接用等号进分隔 如果有多个参数 要用&号分隔 再用等号进行分隔）
+            var sorder = {
+                "orderId": strs[1]
+            }; //直接弹出第一个参数 （如果有多个参数 还要进行循环的）
+
+            $.ajax({
+                type: 'POST',
+                url: "../../../api/admin/getSorderById.json",
+                data: JSON.stringify(sorder),
+                cache: false,
+                async: false,
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    var sorder = data.data;
+                    $("#orderId").val(sorder.orderId);
+                    $("#orderSenderName").val(sorder.orderSenderName);
+                    $("#orderSenderPhone").val(sorder.orderSenderPhone);
+                    $("#orderSenderPosition").val(sorder.orderSenderPosition);
+                    $("#orderReceiverName").val(sorder.orderReceiverName);
+                    $("#orderReceiverPhone").val(sorder.orderReceiverPhone);
+                    $("#orderReceiverPosition").val(sorder.orderReceiverPosition);
+
+                },
+                error: function (errorThrown) {
+                    layer.msg('error!', {icon: 1, time: 1000});
+                }
+
+            })
+
+        }
+
         $('.skin-minimal input').iCheck({
             checkboxClass: 'icheckbox-blue',
             radioClass: 'iradio-blue',
             increaseArea: '20%'
         });
 
-        $("#form-customer-sorder-add").validate({
+        $("#form-admin-sorder-update").validate({
             rules: {
                 orderSenderPhone: {
                     required: true,
@@ -167,29 +201,32 @@
             success: "valid",
             submitHandler: function (form) {
 
-                var formData = form2JsonObject("form-customer-sorder-add");
+                var formData = form2JsonObject("form-add-sorder-update");
                 var sendRegion = $('#provinceSend').find("option:selected").text() + $('#citySend').find("option:selected").text() + $('#countrySend').find("option:selected").text();
                 var receivedRegion = $('#provinceReceived').find("option:selected").text() + $('#cityReceived').find("option:selected").text() + $('#countryReceived').find("option:selected").text();
                 formData.orderSenderPosition = sendRegion + formData.orderSenderPosition;
                 formData.orderReceiverPosition = receivedRegion + formData.orderReceiverPosition;
                 formData = Object.assign(formData, currentRegion, {"orderOwnerId": "3"});
 
+                console.log(formData);
                 $.ajax({
                     type: 'POST',
-                    url: "../../../api/customer/addSorder.json",
+                    url: "../../../api/admin/updateSorder.json",
                     data: JSON.stringify(formData),
                     cache: false,
                     async: false,
                     dataType: "json",
                     contentType: "application/json;charset=utf-8",
                     success: function (data) {
-                        layer.msg('添加成功!', {icon: 1, time: 1000});
+                        if (data.data === 1) {
+                            layer.msg('修改成功!', {icon: 1, time: 1000});
 
-                        parent.$("#refresh i").click();
-                        var index = parent.layer.getFrameIndex(window.name);
-                        setTimeout(function () {
-                            parent.layer.close(index);
-                        }, 500);
+                            parent.$("#refresh i").click();
+                            var index = parent.layer.getFrameIndex(window.name);
+                            setTimeout(function () {
+                                parent.layer.close(index);
+                            }, 500);
+                        }
                     },
                     error: function (errorThrown) {
                         layer.msg('error!', {icon: 1, time: 1000});
@@ -201,14 +238,6 @@
             }
         });
     });
-
-    function bindRegion() {
-        currentRegion.orderRegionName = $('#provinceSend').find("option:selected").text() +
-            $('#citySend').find("option:selected").text() +
-            $('#countrySend').find("option:selected").text();
-
-        currentRegion.orderRegionId= $('#countrySend').val();
-    }
 
 </script>
 </body>

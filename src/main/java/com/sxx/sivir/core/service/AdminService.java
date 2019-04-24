@@ -60,6 +60,16 @@ public interface AdminService {
     Integer deleteUser(User user);
 
 
+    /**
+     * <p> 根据id获取用户信息 </p>
+     * @param user 用户信息
+     * @return Integer
+     * @date 2019/4/9 16:35
+     *
+     */
+    User getUserById(User user);
+
+
 
     /*------                                   --------*/
     /*------        管理员接口 - 订单管理         --------*/
@@ -90,6 +100,15 @@ public interface AdminService {
      *
      */
     Integer deleteSorder(Sorder sorder);
+
+    /**
+     * <p> 根据id获取订单信息 </p>
+     * @param sorder 订单信息
+     * @return Integer
+     * @date 2019/4/9 16:35
+     *
+     */
+    Sorder getSorderById(Sorder sorder);
 
 
 

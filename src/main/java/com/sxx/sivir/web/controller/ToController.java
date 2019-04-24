@@ -1,8 +1,14 @@
 package com.sxx.sivir.web.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.sxx.sivir.core.dal.domain.User;
+import com.sxx.sivir.core.dal.manager.UserManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @Package com.sxx.sivir.web.controller
@@ -45,15 +51,35 @@ public class ToController {
         return "trans-received";
     }
 
+
     @RequestMapping("/api/to/admin-user")
     public String toAdminUser() {
         return "admin-user";
+    }
+    @RequestMapping("/api/to/admin-user-add")
+    public String toAdminAddUser() {
+        return "admin-user-add";
+    }
+    @RequestMapping("/api/to/admin-user-update")
+    public ModelAndView toAdminUpdateUser(@RequestParam Long userId) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("admin-user-update");
+        mv.addObject("userId", userId);
+        return mv;
     }
 
     @RequestMapping("/api/to/admin-sorder")
     public String toAdminSorder() {
         return "admin-sorder";
     }
+    @RequestMapping("/api/to/admin-sorder-update")
+    public ModelAndView toAdminUpdateSorder(@RequestParam Long orderId) {
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("admin-sorder-update");
+        mv.addObject("orderId", orderId);
+        return mv;
+    }
+
 
     @RequestMapping("/api/to/admin-region")
     public String toAdminRegion() {

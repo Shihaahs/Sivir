@@ -54,6 +54,11 @@ public class AdminController {
         return APIResult.ok(adminService.updateUser(user));
     }
 
+   @RequestMapping(value = ADMIN_GET_USER_BY_ID, method = RequestMethod.POST)
+    public APIResult<User> getUserById(@RequestBody User user) {
+        return APIResult.ok(adminService.getUserById(user));
+    }
+
     /*------        管理员接口 - 订单管理         --------*/
 
     @RequestMapping(value = ADMIN_GET_ALL_SORDER, method = RequestMethod.POST)
@@ -69,6 +74,10 @@ public class AdminController {
     @RequestMapping(value = ADMIN_UPDATE_SORDER, method = RequestMethod.POST)
     public APIResult<Integer> updateSorder(@RequestBody Sorder sorder) {
         return APIResult.ok(adminService.updateSorder(sorder));
+    }
+    @RequestMapping(value = ADMIN_GET_SORDER_BY_ID, method = RequestMethod.POST)
+    public APIResult<Sorder> getSorderById(@RequestBody Sorder sorder) {
+        return APIResult.ok(adminService.getSorderById(sorder));
     }
 
     /*------       管理员接口 - 区域管理 - 配置区域内的快递员和车辆       --------*/
