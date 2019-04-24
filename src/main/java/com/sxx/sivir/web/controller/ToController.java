@@ -37,12 +37,12 @@ public class ToController {
 
     @RequestMapping("/api/to/trans-received")
     public String toTransReceived() {
-        return "trans-received";
+        return "trans-send";
     }
 
     @RequestMapping("/api/to/trans-send")
     public String toTransSend() {
-        return "trans-send";
+        return "trans-received";
     }
 
     @RequestMapping("/api/to/admin-user")

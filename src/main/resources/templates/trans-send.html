@@ -20,11 +20,11 @@
     <script type="text/javascript" src="/static/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>查看派送单</title>
+    <title>查看取件单</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span
-        class="c-gray en">&gt;</span> 查看派送单 <a id="refresh" class="btn btn-success radius r"
+        class="c-gray en">&gt;</span> 查看取件单 <a id="refresh" class="btn btn-success radius r"
                                               style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -42,9 +42,9 @@
                 <th width="30">序号</th>
                 <th width="200" id="orderNo">订单编号</th>
                 <th width="80" id="orderType">订单状态</th>
-                <th width="80" id="orderSenderName">收件人</th>
-                <th width="80">收件人手机号</th>
-                <th width="350" id="orderSenderPosition">收件地址</th>
+                <th width="80" id="orderSenderName">寄件人</th>
+                <th width="120" >寄件人手机号</th>
+                <th width="350" id="orderSenderPosition">寄件地址</th>
                 <th width="30">操作</th>
             </tr>
             </thead>
@@ -83,7 +83,7 @@
             ],
             "keys": true,
             "bProcessing": false, //是否显示加载
-            "sAjaxSource": '../trans/getReceivedSorder.json', //请求资源路径,即是"sAjaxSource"
+            "sAjaxSource": '../trans/getSendSorder.json', //请求资源路径,即是"sAjaxSource"
             "serverSide": false, //开启服务器处理模式
             "fnServerData": function (sSource, aoData, fnCallback) {    //fnServerData : 路径 参数 回调函数
                 $.ajax({
@@ -124,12 +124,12 @@
                         }
                     }
                 },
-                {data: "orderReceiverName"},
-                {data: "orderReceiverPhone"},
-                {data: "orderReceiverPosition"},
+                {data: "orderSenderName"},
+                {data: "orderSenderPhone"},
+                {data: "orderSenderPosition"},
                 {data: "orderId",       //操作
                     render: function (data, type, full, meta) {
-                        return '<a title="完成" href="javascript:;" onclick="receivedSorder(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe619;</i></a> ';
+                        return '<a title="揽件" href="javascript:;" onclick="sendSorder(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe65f;</i></a> ';
                     }
                 }
             ]
@@ -138,14 +138,14 @@
     }
 
     /*揽件*/
-    function receivedSorder(obj, id) {
+    function sendSorder(obj, id) {
         alert("id: " + id);
         var sorder = {
             "orderId": id,
-            "orderType": 4   //4 - 表示订单正在配送中
+            "orderType": 1   //1 - 表示订单已由系统发放给快递员
         };
 
-        layer.confirm('确认订单已收件？', function () {
+        layer.confirm('确认订单已揽件？', function () {
             $.ajax({
                 type: 'POST',
                 url: '../trans/updateReceivedSorder.json',
@@ -155,7 +155,7 @@
                 success: function (data) {
                     $(obj).parents("tr").remove();
 
-                    layer.msg('订单已完成!', {icon: 1, time: 1000});
+                    layer.msg('订单已揽件!', {icon: 1, time: 1000});
                 },
                 error: function (data) {
                     console.log(data.msg);
