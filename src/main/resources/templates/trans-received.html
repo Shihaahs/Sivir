@@ -20,11 +20,11 @@
     <script type="text/javascript" src="/static/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>订单管理</title>
+    <title>查看取件单</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 订单管理 <span
-        class="c-gray en">&gt;</span> 订单管理 <a id="refresh" class="btn btn-success radius r"
+        class="c-gray en">&gt;</span> 查看取件单 <a id="refresh" class="btn btn-success radius r"
                                               style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
@@ -32,10 +32,6 @@
     <div class="cl pd-5 bg-1 bk-gray mt-20">
 		<span class="l">
 			<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
-			<a class="btn btn-primary radius" data-title="下订单" data-href="customer-sorder-add"
-               onclick="addCustomerSorder(this)" href="javascript:;">
-				<i class="Hui-iconfont">&#xe600;</i> 下订单
-			</a>
 		</span>
         <span class="r">共有数据：<strong id="pageCount"></strong> 条</span></div>
     <div class="mt-20">
@@ -44,15 +40,10 @@
             <thead>
             <tr class="text-c">
                 <th width="30">序号</th>
-                <th width="120" id="orderNo">订单编号</th>
+                <th width="200" id="orderNo">订单编号</th>
                 <th width="80" id="orderType">订单状态</th>
                 <th width="80" id="orderSenderName">寄件人</th>
-                <th width="250" id="orderSenderPosition">寄件地址</th>
-                <th width="80" id="orderReceiverName">收件人</th>
-                <th width="250" id="orderReceiverPosition">收件地址</th>
-                <th width="100" id="orderTransName">快递员</th>
-                <th width="120" id="orderCarNo">快递车辆</th>
-                <th width="180" id="orderRegionName">所在地</th>
+                <th width="350" id="orderSenderPosition">寄件地址</th>
                 <th width="30">操作</th>
             </tr>
             </thead>
@@ -87,11 +78,11 @@
         table = $("#table").DataTable({
             "aaSorting": [[0, "asc"]],//属性'aaSorting':初始化表格的时候，选择以怎样的规则排序 asc - 顺， desc - 逆
             "aoColumnDefs": [
-                {"orderable": false, "aTargets": [1,4,6,9, 10]}// 制定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
+                {"orderable": false, "aTargets": []}// 制定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
             ],
             "keys": true,
             "bProcessing": false, //是否显示加载
-            "sAjaxSource": '../customer/getAllSorder.json', //请求资源路径,即是"sAjaxSource"
+            "sAjaxSource": '../trans/getReceivedSorder.json', //请求资源路径,即是"sAjaxSource"
             "serverSide": false, //开启服务器处理模式
             "fnServerData": function (sSource, aoData, fnCallback) {    //fnServerData : 路径 参数 回调函数
                 $.ajax({
@@ -134,14 +125,9 @@
                 },
                 {data: "orderSenderName"},
                 {data: "orderSenderPosition"},
-                {data: "orderReceiverName"},
-                {data: "orderReceiverPosition"},
-                {data: "orderTransName"},
-                {data: "orderCarNo"},
-                {data: "orderRegionName"},
                 {data: "orderId",       //操作
                     render: function (data, type, full, meta) {
-                        return '<a title="删除" href="javascript:;" onclick="deleteCustomerSorder(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a> ';
+                        return '<a title="删除" href="javascript:;" onclick="receiveSorder(this,' + data + ')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a> ';
                     }
                 }
             ]
@@ -149,31 +135,17 @@
 
     }
 
-
-    /* 跳转新增页面 */
-    function addCustomerSorder() {
-        layer.open({
-            type: 2,
-            area: ['800px', '500px'],
-            fix: false, //不固定
-            maxmin: true,
-            shade: 0.4,
-            title: "新增订单",
-            content: '../../api/to/customer-sorder-add',
-        });
-    }
-
-    /*取消订单*/
-    function deleteCustomerSorder(obj, id) {
+    /*揽件*/
+    function receiveSorder(obj, id) {
         alert("id: " + id);
         var sorder = {
             "orderId": id
         };
 
-        layer.confirm('确认要取消订单吗？', function () {
+        layer.confirm('确认揽件？', function () {
             $.ajax({
                 type: 'POST',
-                url: '../customer/cancelSorder.json',
+                url: '../trans/updateReceivedSorder.json',
                 data: JSON.stringify(sorder),
                 dataType: 'json',
                 contentType: "application/json;charset=utf-8",

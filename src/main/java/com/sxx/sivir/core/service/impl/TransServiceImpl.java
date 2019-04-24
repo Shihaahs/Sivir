@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.sxx.sivir.core.common.page.PageQuery.conditionAdapter;
@@ -40,6 +42,14 @@ public class TransServiceImpl implements TransService {
                 new EntityWrapper<Sorder>()
                         .eq("order_trans_id", pageRequestDTO.getUserId()))
                 .stream().map(Sorder::getOrderId).collect(toList());
+
+        if (orderIds.size() == 0) {
+            log.info("快递员【" + pageRequestDTO.getUserId() + "】 - 没有揽件单");
+            return new PageResult<>(pageRequestDTO.getPageSize(),
+                    pageRequestDTO.getPageCurrent(),
+                    0,
+                    Collections.emptyList());
+        }
         Wrapper<Sorder> wrapper = conditionAdapter(pageRequestDTO);
         wrapper.in("order_id", orderIds);
 
@@ -49,7 +59,7 @@ public class TransServiceImpl implements TransService {
         //分页查询
         Page<Sorder> productPage = sorderManager.selectPage(
                 initPage(pageRequestDTO),
-                conditionAdapter(pageRequestDTO));
+                wrapper);
 
         return new PageResult<>(pageRequestDTO.getPageSize(),
                 pageRequestDTO.getPageCurrent(),

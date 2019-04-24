@@ -35,9 +35,44 @@ public class ToController {
         return "customer-sorder";
     }
 
-    @RequestMapping("/api/to/customer-sorder-add")
-    public String toCustomerSorderAdd() {
-        return "customer-sorder-add";
+    @RequestMapping("/api/to/trans-received")
+    public String toTransReceived() {
+        return "trans-received";
+    }
+
+    @RequestMapping("/api/to/trans-send")
+    public String toTransSend() {
+        return "trans-send";
+    }
+
+    @RequestMapping("/api/to/admin-user")
+    public String toAdminUser() {
+        return "admin-user";
+    }
+
+    @RequestMapping("/api/to/admin-sorder")
+    public String toAdminSorder() {
+        return "admin-sorder";
+    }
+
+    @RequestMapping("/api/to/admin-region")
+    public String toAdminRegion() {
+        return "admin-region";
+    }
+
+    @RequestMapping("/api/to/admin-car")
+    public String toAdminCar() {
+        return "admin-car";
+    }
+
+    @RequestMapping("/api/to/admin-arrange")
+    public String toAdminArrange() {
+        return "admin-arrange";
+    }
+
+    @RequestMapping("/api/to/admin-report")
+    public String toAdminReport() {
+        return "admin-report";
     }
 
 
