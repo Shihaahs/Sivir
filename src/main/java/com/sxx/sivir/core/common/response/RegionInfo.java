@@ -3,10 +3,12 @@ package com.sxx.sivir.core.common.response;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.sxx.sivir.core.dal.domain.Car;
 import com.sxx.sivir.core.dal.domain.User;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,28 +21,33 @@ import java.util.List;
 
 @Data
 public class RegionInfo {
+    /**
+     * 0-快递员， 1-车
+     */
+    private Integer regionContentType;
+    /**
+     * 快递员/车辆 id
+     */
+    private Long regionContentId;
+    /**
+     * 快递员/车辆
+     */
+    private String regionContent;
+    /**
+     * 快递员/车辆状态
+     */
+    private String regionContentInfo;
 
-    /**
-     * 快递员信息
-     */
-    private List<User> regionTransList;
-    /**
-     * 车辆信息
-     */
-    private List<Car> regionCarList;
-    /**
-     * 车辆信息
-     */
+
     private Long regionId;
-    /**
-     * 车辆信息
-     */
+
     private String regionName;
+
+
     /**
-     * 1-省， 2-市， 3-区
+     * 修改时间
      */
-    private Integer regionType;
-
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date gmtModified;
 
 }

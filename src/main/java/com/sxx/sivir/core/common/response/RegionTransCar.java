@@ -28,7 +28,6 @@ public class RegionTransCar {
 
 
     private Long regionId;
-    ;
 
 
 

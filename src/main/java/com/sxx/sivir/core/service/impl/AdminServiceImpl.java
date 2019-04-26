@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.plugins.pagination.Pagination;
+import com.sxx.sivir.core.common.enums.CarTypeEnum;
+import com.sxx.sivir.core.common.enums.OrderTypeEnum;
+import com.sxx.sivir.core.common.enums.UserPermissionEnum;
 import com.sxx.sivir.core.common.page.PageResult;
 import com.sxx.sivir.core.common.request.PageRequestDTO;
 import com.sxx.sivir.core.common.response.RegionInfo;
@@ -22,9 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.sxx.sivir.core.common.page.PageQuery.conditionAdapter;
@@ -76,8 +77,15 @@ public class AdminServiceImpl implements AdminService {
         }
         int count = userManager.selectCount(new EntityWrapper<User>().eq("phone", user.getPhone()));
         if (count == 0) {
+            if (user.getPermission().equals(UserPermissionEnum.TRANS.getCode())) {
+                //快递员注册初始 地区为1
+                user.setTransRegionId(1L);
+            } else {
+                user.setTransRegionId(0L);
+            }
             return userManager.insert(user);
         }
+
         return 2;
     }
 
@@ -146,18 +154,20 @@ public class AdminServiceImpl implements AdminService {
             return null;
         }
         int row = 0;
-        if (null != regionTransCar.getRegionCarId() && 0L == regionTransCar.getRegionCarId()) {
+        if (null != regionTransCar.getRegionCarId() && 0L != regionTransCar.getRegionCarId()) {
             Car car = new Car();
             car.setCarId(regionTransCar.getRegionCarId());
             car.setCarRegionId(regionTransCar.getRegionId());
+            car.setCarType(CarTypeEnum.IN_WAREHOUSE.getCode());
+            car.setCarRegionName(regionManager.getAllRegionNameByRegionId(regionTransCar.getRegionId()));
             row = carManager.updateById(car);
 
             if (1 != row) {
                 log.error("AdminServiceImpl - addRegionTransCar -> 区域管理的新增车辆失败");
-                return null;
+                return 2;
             }
         }
-        if (null != regionTransCar.getRegionTransId() && 0L == regionTransCar.getRegionTransId()) {
+        if (null != regionTransCar.getRegionTransId() && 0L != regionTransCar.getRegionTransId()) {
             User trans = new User();
             trans.setUserId(regionTransCar.getRegionTransId());
             trans.setTransRegionId(regionTransCar.getRegionId());
@@ -165,7 +175,7 @@ public class AdminServiceImpl implements AdminService {
 
             if (1 != row) {
                 log.error("AdminServiceImpl - addRegionTransCar -> 区域管理的新增快递员失败");
-                return null;
+                return 2;
             }
         }
         return row;
@@ -205,31 +215,53 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public PageResult<RegionInfo> getAllRegionInfo(PageRequestDTO pageRequestDTO) {
+        List<Long> regionIds;
+        if (Objects.nonNull(pageRequestDTO.getRegionId()) && pageRequestDTO.getRegionId().equals(0L)) {
+            regionIds = Collections.singletonList(pageRequestDTO.getRegionId());
+        } else {
+            Pagination page = new Page<Region>(pageRequestDTO.getPageCurrent(), pageRequestDTO.getPageSize());
+            regionIds = regionManager.getRegionIdWithCarOrTrans(page);
+        }
 
-        Pagination page = new Page<Region>(pageRequestDTO.getPageCurrent(), pageRequestDTO.getPageSize());
-        List<Long> regionIds = regionManager.getRegionIdWithCarOrTrans(page);
         //分页获取有车或人的region
-        Map<Long, String> regionList = regionManager.selectList(
+        Map<Long, Region> regionList = regionManager.selectList(
                 new EntityWrapper<Region>()
                         .in("region_id", regionIds))
-                .stream().collect(Collectors.toMap(Region::getRegionId, Region::getRegionName));
+                .stream().collect(Collectors.toMap(Region::getRegionId, x -> x));
+
 
         List<RegionInfo> regionInfoList = new ArrayList<>();
-        regionList.forEach((regionId, regionName) -> {
+        regionList.forEach((regionId, region) -> {
             List<Car> carList = carManager.selectList(new EntityWrapper<Car>().eq("car_region_id", regionId));
             List<User> transList = userManager.selectList(new EntityWrapper<User>().eq("trans_region_id", regionId));
             //只要分配了车或者人 就加载出来
             if (0 != carList.size() || 0 != transList.size()) {
                 RegionInfo regionInfo = new RegionInfo();
                 regionInfo.setRegionId(regionId);
-                regionInfo.setRegionName(regionName);
+                regionInfo.setRegionName(region.getRegionName());
                 if (0 != carList.size()) {
-                    regionInfo.setRegionCarList(carList);
+                    //车辆信息
+                    regionInfo.setRegionContentType(1);
+                    carList.forEach( car -> {
+                        regionInfo.setRegionContent(car.getCarNo());
+                        regionInfo.setRegionContentId(car.getCarId());
+                        regionInfo.setRegionContentInfo(CarTypeEnum.getDesc(car.getCarType()));
+                        regionInfo.setGmtModified(car.getGmtModified());
+                        regionInfoList.add(regionInfo);
+                    });
+
                 }
                 if (0 != transList.size()) {
-                    regionInfo.setRegionTransList(transList);
+                    //快递员信息
+                    regionInfo.setRegionContentType(0);
+                    transList.forEach( trans -> {
+                        regionInfo.setRegionContent(trans.getUserName());
+                        regionInfo.setRegionContentId(trans.getUserId());
+                        regionInfo.setRegionContentInfo("工作中");
+                        regionInfo.setGmtModified(trans.getGmtModified());
+                        regionInfoList.add(regionInfo);
+                    });
                 }
-                regionInfoList.add(regionInfo);
             }
         });
 
@@ -246,11 +278,22 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public Integer addCar(Car car) {
-        return carManager.insert(car);
+        if (null == car.getCarNo() || car.getCarNo().isEmpty()) {
+            log.error("新增车辆未检测到车牌号");
+            return 0;
+        }
+        int count = carManager.selectCount(new EntityWrapper<Car>().eq("car_no", car.getCarNo()));
+        if (count == 0) {
+            return carManager.insert(car);
+        }
+        return 2;
     }
 
     @Override
     public Integer deleteCar(Car car) {
+
+        //删除车辆时要对车辆的做涉及的订单做校验
+
         return carManager.deleteById(car.getCarId());
     }
 
@@ -261,10 +304,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public PageResult<Car> getAllCar(PageRequestDTO pageRequestDTO) {
+        Wrapper wrapper = conditionAdapter(pageRequestDTO);
+        wrapper.ne("car_type", CarTypeEnum.OBSOLETED.getCode());
         //分页条件查询
         Page<Car> carPage = carManager.selectPage(
                 initPage(pageRequestDTO),
-                conditionAdapter(pageRequestDTO));
+                wrapper);
 
         return new PageResult<>(pageRequestDTO.getPageSize(),
                 pageRequestDTO.getPageCurrent(),
@@ -299,6 +344,8 @@ public class AdminServiceImpl implements AdminService {
         Wrapper<Sorder> wrapper = conditionAdapter(pageRequestDTO);
         //待揽件 和 配送中 需要 安排快递员
         //wrapper.in("order_type", new Integer[]{1, 4});
+        wrapper.eq("order_type", OrderTypeEnum.WAIT_GET.getCode());
+
         //分页条件查询
         Page<Sorder> sorderPage = sorderManager.selectPage(
                 initPage(pageRequestDTO),

@@ -1,9 +1,5 @@
 package com.sxx.sivir.web.controller;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.sxx.sivir.core.dal.domain.User;
-import com.sxx.sivir.core.dal.manager.UserManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +32,24 @@ public class ToController {
         return "welcome";
     }
 
+    /**
+     *     客户 - 订单管理
+     */
+
     @RequestMapping("/api/to/customer-sorder")
     public String toCustomerSorder() {
         return "customer-sorder";
     }
+
+    @RequestMapping("/api/to/customer-sorder-add")
+    public String toCustomerAddSorder() {
+        return "customer-sorder-add";
+    }
+
+    /**
+     *     快递员 - 订单管理
+     */
+
 
     @RequestMapping("/api/to/trans-received")
     public String toTransReceived() {
@@ -52,6 +62,9 @@ public class ToController {
     }
 
 
+    /**
+     *     管理员 - 人员管理
+     */
     @RequestMapping("/api/to/admin-user")
     public String toAdminUser() {
         return "admin-user";
@@ -68,6 +81,10 @@ public class ToController {
         return mv;
     }
 
+
+    /**
+     *     管理员 - 订单管理
+     */
     @RequestMapping("/api/to/admin-sorder")
     public String toAdminSorder() {
         return "admin-sorder";
@@ -80,22 +97,58 @@ public class ToController {
         return mv;
     }
 
-
+    /**
+     *     管理员 - 区域存储管理
+     */
     @RequestMapping("/api/to/admin-region")
     public String toAdminRegion() {
         return "admin-region";
     }
 
+    @RequestMapping("/api/to/admin-region-add")
+    public String toAdminAddRegion() {
+        return "admin-region-update";
+    }
+
+    @RequestMapping("/api/to/admin-region-update")
+    public String toAdminUpdateRegion() {
+        return "admin-region-update";
+    }
+
+
+    /**
+     *     管理员 - 车辆管理
+     */
     @RequestMapping("/api/to/admin-car")
     public String toAdminCar() {
         return "admin-car";
     }
 
+    @RequestMapping("/api/to/admin-car-add")
+    public String toAdminAddCar() {
+        return "admin-car-add";
+    }
+
+    /**
+     *     管理员 - 配送管理
+     */
     @RequestMapping("/api/to/admin-arrange")
     public String toAdminArrange() {
         return "admin-arrange";
     }
+    @RequestMapping("/api/to/admin-arrange-update")
+    public ModelAndView toAdminUpdateArrange(@RequestParam Long orderId, @RequestParam Long orderRegionId) {
+        System.out.println(orderId);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("admin-arrange-update");
+        mv.addObject("orderId", orderId);
+        mv.addObject("orderRegionId", orderRegionId);
+        return mv;
+    }
 
+    /**
+     *     管理员 - 报表管理
+     */
     @RequestMapping("/api/to/admin-report")
     public String toAdminReport() {
         return "admin-report";

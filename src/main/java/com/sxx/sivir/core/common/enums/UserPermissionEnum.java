@@ -9,14 +9,14 @@ import java.util.Arrays;
  * @Author: 尚星
  * @Date: 2019/4/18 10:48
  * @Copyright: 2018-2099  ShangXing - Sivir All rights reserved.
- * @Description: 地区类型枚举
- * 1-省， 2-市， 3-区
+ * @Description: 车类型枚举
+ * 0-管理员， 1-快递员， 2-客户
  */
-public enum RegionTypeEnum {
+public enum UserPermissionEnum {
 
-    PROVINCE(1,"省"),
-    CITY(2,"市"),
-    COUNTRY(3,"区");
+    ADMIN(0,"管理员"),
+    TRANS(1,"快递员"),
+    CUSTOMER(2,"客户");
 
 
     @Getter
@@ -24,15 +24,15 @@ public enum RegionTypeEnum {
     @Getter
     private String desc;
 
-    RegionTypeEnum(Integer code, String desc) {
+    UserPermissionEnum(Integer code, String desc) {
         this.code = code;
         this.desc = desc;
     }
 
-    public static String getDesc(Integer code){
+    public static String getDesc(Long code){
         return Arrays.stream(values())
                 .filter(e -> e.getCode().equals(code))
-                .map(RegionTypeEnum::getDesc)
+                .map(UserPermissionEnum::getDesc)
                 .findFirst()
                 .orElse("");
     }

@@ -284,19 +284,14 @@ function showCountry($country) {
 
 
 
-function loadData(data, url) {
-    $.ajax({
-        type: 'POST',
-        url: url,
-        async: false,
-        dataType: "json",
-        contentType: "application/json;charset=utf-8",
-        success: function (result) {
-            return result;
-        },
-        error: function (errorThrown) {
-            layer.msg('provideData Error!', {icon: 1, time: 1000});
-        }
-    });
-
+function bindDataToSelect(data, $select) {
+    console.log(data);
+    $select.empty();
+    var len = data.length;
+    for (var i = 0; i < len; i++) {
+        var option = document.createElement('option');
+        option.innerText = data[i]['regionName'];
+        option.value = data[i]['regionId'];
+        $select.append(option);
+    }
 }

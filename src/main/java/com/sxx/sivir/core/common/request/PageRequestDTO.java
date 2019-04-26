@@ -26,6 +26,10 @@ public class PageRequestDTO implements Serializable {
      */
     private String permission;
     /**
+     * 区域id
+     */
+    private Long regionId;
+    /**
      * 开始时间
      */
     private String startTime;

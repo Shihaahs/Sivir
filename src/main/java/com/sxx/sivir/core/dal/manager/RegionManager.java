@@ -15,4 +15,6 @@ public interface RegionManager extends BaseManager<Region> {
      * @return 地区ids
      */
     List<Long> getRegionIdWithCarOrTrans(Pagination page);
+
+    String getAllRegionNameByRegionId(Long regionId);
 }

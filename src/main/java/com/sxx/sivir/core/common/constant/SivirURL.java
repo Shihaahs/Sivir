@@ -9,6 +9,8 @@ public class SivirURL {
     public static final String PROVIDE_PROVINCE_DATA = "/public/provideProvinceData.json";
     public static final String PROVIDE_CITY_DATA = "/public/provideCityData.json";
     public static final String PROVIDE_COUNTRY_DATA = "/public/provideCountryData.json";
+    public static final String PROVIDE_TRANS_REGION_DATA = "/public/provideTransRegionData.json";
+    public static final String PROVIDE_CAR_REGION_DATA = "/public/provideCarRegionData.json";
 
     /**
      * 系统接口
