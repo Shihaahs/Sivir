@@ -1,6 +1,7 @@
 package com.sxx.sivir.core.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.sxx.sivir.core.common.enums.UserPermissionEnum;
 import com.sxx.sivir.core.dal.domain.User;
 import com.sxx.sivir.core.dal.manager.UserManager;
 import com.sxx.sivir.core.service.LoginRegisterService;
@@ -28,6 +29,9 @@ public class LoginRegisterServiceImpl implements LoginRegisterService {
 
     @Override
     public Integer registerUser(User user) {
+        if (user.getPermission().equals(UserPermissionEnum.TRANS.getCode())) {
+            user.setTransRegionId(1L);
+        }
         return userManager.insert(user);
     }
 

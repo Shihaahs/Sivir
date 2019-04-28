@@ -1,20 +1,27 @@
 package com.sxx.sivir.web.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.sxx.sivir.core.common.entity.APIResult;
+import com.sxx.sivir.core.common.enums.GlobalErrorCode;
 import com.sxx.sivir.core.common.page.PageResult;
 import com.sxx.sivir.core.common.request.PageRequestDTO;
 import com.sxx.sivir.core.common.response.RegionInfo;
 import com.sxx.sivir.core.common.response.RegionTransCar;
+import com.sxx.sivir.core.common.util.DateUtil;
 import com.sxx.sivir.core.dal.domain.Car;
 import com.sxx.sivir.core.dal.domain.Sorder;
 import com.sxx.sivir.core.dal.domain.User;
 import com.sxx.sivir.core.service.AdminService;
+import com.sxx.sivir.web.util.NetWorkUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Objects;
 
 import static com.sxx.sivir.core.common.constant.SivirURL.*;
 
@@ -139,8 +146,24 @@ public class AdminController {
 
 
 
-    @RequestMapping(value = ADMIN_GET_BUSINESS_REPORT, method = RequestMethod.POST)
-    public APIResult<PageResult<Sorder>> getBusinessReport(@RequestBody PageRequestDTO pageRequestDTO) {
-        return APIResult.ok(adminService.getBusinessReport(pageRequestDTO));
+    @RequestMapping(value = ADMIN_GET_BUSINESS_REPORT, method = RequestMethod.GET)
+    public APIResult<Boolean> getBusinessReport(@RequestParam Integer pageSize,@RequestParam(required = false) Integer regionId, HttpServletResponse response) throws Exception{
+        PageRequestDTO pageRequestDTO = new PageRequestDTO();
+        pageRequestDTO.setPageSize(pageSize);
+        if (Objects.nonNull(regionId) && !regionId.equals(0L)) {
+            pageRequestDTO.setRegionId(Long.valueOf(regionId));
+        }
+        XSSFWorkbook workbook = adminService.getBusinessReport(pageRequestDTO);
+        if (Objects.isNull(workbook)) {
+            APIResult.error(GlobalErrorCode.SYSTEM_EXCEPTION.getCode(), "excel 导出失败");
+        }
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-disposition", "attachment;filename=" + new String("订单报表".getBytes("UTF-8"),"iso-8859-1")
+                + DateUtil.parseToString(new Date(),DateUtil.NORMAL_PATTERN) + ".xls");
+        OutputStream outputStream = response.getOutputStream();
+        workbook.write(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return null;
     }
 }

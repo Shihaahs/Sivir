@@ -20,19 +20,41 @@
     <script type="text/javascript" src="/static/lib/DD_belatedPNG_0.0.8a-min.js"></script>
     <script>DD_belatedPNG.fix('*');</script>
     <![endif]-->
-    <title>配送管理</title>
+    <title>报表管理</title>
 </head>
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 系统管理 <span
-        class="c-gray en">&gt;</span> 配送管理 <a id="refresh" class="btn btn-success radius r"
+        class="c-gray en">&gt;</span> 报表管理 <a id="refresh" class="btn btn-success radius r"
                                               style="line-height:1.6em;margin-top:3px"
                                               href="javascript:location.replace(location.href);" title="刷新"><i
         class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
     <div class="cl pd-5 bg-1 bk-gray mt-20">
-		<span class="l">
+        <span class="l">
 			<button onclick="removeIframe()" class="btn btn-primary radius">关闭选项卡</button>
+			<a class="btn btn-primary radius" data-title="生成报表" data-href="admin-report-upload"
+               onclick="uploadAdminReport(this)" href="javascript:;">
+				<i class="Hui-iconfont">&#xe600;</i> 生成报表
+			</a>
 		</span>
+			<div class="formControls col-xs-8 col-sm-9">
+                <!--省份选择-->
+                <select id="provinceReport" onchange="showCity($('#cityReport'))" class="select" onclick="showProvince($('#provinceReport'))"
+                        style="width: 17%;height:32px ;display: inline-block">
+                    <option>请选择省份</option>
+                </select>
+                <!--城市选择-->
+                <select id="cityReport" onchange="showCountry($('#countryReport'))" class="select"
+                        style="width: 17%;height:32px ;display: inline-block">
+                    <option>请选择城市</option>
+                </select>
+                <!--县区选择-->
+                <select id="countryReport" onchange="changePageDTO()" class="select"
+                        style="width: 17%;height:32px ;display: inline-block">
+                    <option>请选择县区</option>
+                </select>
+            </div>
+
         <span class="r">共有数据：<strong id="pageCount"></strong> 条</span></div>
     <div class="mt-20">
         <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive"
@@ -48,7 +70,7 @@
                 <th width="250" id="orderReceiverPosition">收件地址</th>
                 <th width="100" id="orderTransName">快递员</th>
                 <th width="120" id="orderCarNo">快递车辆</th>
-                <th width="30">操作</th>
+                <th width="180" id="orderRegionName">所在地</th>
             </tr>
             </thead>
         </table>
@@ -66,26 +88,25 @@
 <script type="text/javascript" src="/static/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript" src="/static/fillFrom.js"></script>
 <script type="text/javascript" th:inline="none">
-    var table;
     var index = 0;
+    var pageRequestDTO = {
+        pageSize: 500,
+        pageCurrent: 1
+    };
     //页面加载后自动请求一次
-    $(document).ready(initTable());
+    $(document).ready(initTable(pageRequestDTO));
 
     //加载table数据
-    function initTable() {
-        var pageRequestDTO = {
-            pageSize: 100,
-            pageCurrent: 1
-        };
+    function initTable(pageRequestDTO) {
 
-        table = $("#table").DataTable({
+       $("#table").DataTable({
             "aaSorting": [[0, "asc"]],//属性'aaSorting':初始化表格的时候，选择以怎样的规则排序 asc - 顺， desc - 逆
             "aoColumnDefs": [
-                {"orderable": false, "aTargets": [1, 3, 5]}// 制定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
+                {"orderable": false, "aTargets": [2, 3, 6]}// 指定列不参与排序 //targets ： 表示具体需要操作的目标列，下标从 0 开始
             ],
             "keys": true,
             "bProcessing": false, //是否显示加载
-            "sAjaxSource": '../admin/getAllSorderInfo.json', //请求资源路径,即是"sAjaxSource"
+            "sAjaxSource": '../admin/getAllSorder.json', //请求资源路径,即是"sAjaxSource"
             "serverSide": false, //开启服务器处理模式
             "fnServerData": function (sSource, aoData, fnCallback) {    //fnServerData : 路径 参数 回调函数
                 $.ajax({
@@ -134,48 +155,46 @@
                 {data: "orderReceiverPosition"},
                 {data: "orderTransName"},
                 {data: "orderCarNo"},
-                {
-                    data: "orderId",       //操作
-                    render: function (data, type, full, meta) {
-                        return '<a style="text-decoration:none" class="ml-5" onClick="arrangeAdminSorder(' + data + ')" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a> ';
-                    }
-                }
+                {data: "orderRegionName"}
+
             ]
         });
+
     }
 
-    function arrangeAdminSorder(orderId) {
-        var sorder = {
-            "orderId": orderId
+    function changePageDTO() {
+        /*pageRequestDTO = {
+            pageSize: pageRequestDTO.pageSize,
+            pageCurrent: pageRequestDTO.pageCurrent
         };
-        var orderRegionId;
-        $.ajax({
-            type: 'POST',
-            url: "../../../api/admin/getSorderById.json",
-            data: JSON.stringify(sorder),
-            cache: false,
-            async: false,
-            dataType: "json",
-            contentType: "application/json;charset=utf-8",
-            success: function (data) {
-                orderRegionId = data.data.orderRegionId;
-            },
-            error: function (errorThrown) {
-                layer.msg('error!', {icon: 1, time: 1000});
-            }
-
-        });
-        layer.open({
-            type: 2,
-            area: ['800px', '500px'],
-            fix: false, //不固定
-            maxmin: true,
-            shade: 0.4,
-            title: "配送订单",
-            content: '../../api/to/admin-arrange-update?orderId=' + orderId + '&orderRegionId=' + orderRegionId
-        });
+        var region = {
+            "regionId" : $("#countryReport").val()
+        };
+        pageRequestDTO = Object.assign(pageRequestDTO, region);
+        console.log(pageRequestDTO);
+        initTable(pageRequestDTO);*/
     }
 
+    //下载报表
+    function uploadAdminReport() {
+        //var getParams = "pageSize="+params.pickWay + "&carUnique="+params.carUnique + "&orderNo=" + params.orderNo + "&ownerName=" + params.ownerName + "&handleStatus=" + params.handleStatus + "&supPlaceId=" + params.supPlaceId;
+        if ( $("#countryReport").val() !== "请选择县区") {
+            alert($("#countryReport").val());
+            window.location.href = "../admin/getBusinessReport.json?pageSize=500&regionId=" + $("#countryReport").val();
+        } else {
+            window.location.href = "../admin/getBusinessReport.json?pageSize=500";
+        }
+        /*$.ajax({
+            'type': 'POST', //提交方式
+            "url": "../admin/getBusinessReport.json", //路径
+            "dataType": "json", //数据类型:json
+            "data": JSON.stringify(pageRequestDTO),
+            "contentType": "application/json;charset=utf-8",
+            "success": function (resp) {
+            }
+        });*/
+
+    }
 </script>
 </body>
 </html>

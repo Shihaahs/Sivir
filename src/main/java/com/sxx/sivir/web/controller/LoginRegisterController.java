@@ -6,6 +6,7 @@ import com.sxx.sivir.core.dal.manager.UserManager;
 import com.sxx.sivir.core.service.LoginRegisterService;
 import com.sxx.sivir.web.security.token.TokenHelper;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,32 +45,23 @@ public class LoginRegisterController {
         user = loginRegisterService.checkLogin(user);
         if (null != user) {
             request.getSession().setAttribute("user", user);
-            Cookie cookie = new Cookie("x-auth-token", tokenHelper.getToken(user));
-            //可在同一应用服务器内共享cookie
-            cookie.setPath("/");
-            response.addCookie(cookie);
+
             log.info("login -> " + user.getUserName() + "用户已登录 ");
-            return APIResult.ok(SUCCESS.getMessage());
+            return APIResult.ok(user);
         }
         return APIResult.error(LOGIN_FAILURE.getCode(), LOGIN_FAILURE.getMessage());
     }
 
     @ApiOperation(value = "登出", notes = "登出")
-    @ResponseBody
-    @RequestMapping(value = SIVIR_LOGOUT, method = RequestMethod.POST)
-    public APIResult logout(HttpServletRequest request) {
+    @RequestMapping(value = SIVIR_LOGOUT, method = RequestMethod.GET)
+    public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.removeAttribute("user");
-        for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals("x-auth-token")) {
-                cookie.setValue(null);
-            }
-        }
         if (null == session.getAttribute("user")) {
             log.info("logout -> 用户已注销 ");
-            return APIResult.ok();
+            return "redirect:to/login";
         }
-        return APIResult.error(LOGOUT_FAILURE.getCode(), LOGOUT_FAILURE.getMessage());
+        return "/to/index";
     }
 
 

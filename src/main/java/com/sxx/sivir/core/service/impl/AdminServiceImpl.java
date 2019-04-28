@@ -11,6 +11,7 @@ import com.sxx.sivir.core.common.page.PageResult;
 import com.sxx.sivir.core.common.request.PageRequestDTO;
 import com.sxx.sivir.core.common.response.RegionInfo;
 import com.sxx.sivir.core.common.response.RegionTransCar;
+import com.sxx.sivir.core.common.util.DateUtil;
 import com.sxx.sivir.core.dal.dao.RegionDao;
 import com.sxx.sivir.core.dal.domain.Car;
 import com.sxx.sivir.core.dal.domain.Region;
@@ -22,6 +23,9 @@ import com.sxx.sivir.core.dal.manager.SorderManager;
 import com.sxx.sivir.core.dal.manager.UserManager;
 import com.sxx.sivir.core.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +46,8 @@ import static com.sxx.sivir.core.common.page.PageQuery.initPage;
 @Slf4j
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private static final Integer COLUMN_WIDTH = 25 * 256;
 
     @Autowired
     private UserManager userManager;
@@ -322,8 +328,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public Integer arrangeSorderTransCar(Sorder sorder) {
-        if (null == sorder.getOrderTransId() || null == sorder.getOrderCarId()) {
-            log.error("AdminServiceImpl - arrangeSorderTransCar -> 订单安排运输的快递员和车辆为空");
+        if (null == sorder.getOrderTransId() && null == sorder.getOrderCarId()) {
+            log.error("AdminServiceImpl - arrangeSorderTransCar -> 订单安排运输的快递员和车辆均为空");
             return null;
         }
         return sorderManager.updateById(sorder);
@@ -361,7 +367,161 @@ public class AdminServiceImpl implements AdminService {
      * 管理员接口 - 业务统一生成报表
      */
     @Override
-    public PageResult<Sorder> getBusinessReport(PageRequestDTO pageRequestDTO) {
-        return null;
+    public XSSFWorkbook getBusinessReport(PageRequestDTO pageRequestDTO) {
+
+        Wrapper<Sorder> wrapper = conditionAdapter(pageRequestDTO);
+        if (Objects.nonNull(pageRequestDTO.getRegionId()) && !pageRequestDTO.getRegionId().equals(0L)) {
+            wrapper.eq("order_region_id", pageRequestDTO.getRegionId());
+        }
+        //分页条件查询
+        Page<Sorder> sorderPage = sorderManager.selectPage(
+                initPage(pageRequestDTO), wrapper);
+        return createExcelInfo(sorderPage.getRecords());
+    }
+
+    private XSSFWorkbook createExcelInfo(List<Sorder> records) {
+
+        //创建一个工作表
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        String name = DateUtil.parseToString(new Date(), "yyyy-MM-dd");
+        XSSFSheet sheet = workbook.createSheet(name);
+        //添加表头
+        XSSFRow xssfRow = sheet.createRow(0);
+
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        font.setFontHeight(14);
+        //表头格式
+        XSSFCellStyle headCellStyle = workbook.createCellStyle();
+        headCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        headCellStyle.setAlignment(HorizontalAlignment.CENTER);
+        headCellStyle.setFont(font);
+        //自动换行
+        headCellStyle.setWrapText(true);
+        //数据格式
+        XSSFCellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        //自动换行
+        cellStyle.setWrapText(true);
+        int column = 0;
+
+        //添加表头内容
+        XSSFCell headCell = xssfRow.createCell(column);
+        headCell.setCellValue("订单编号");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("订单状态");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("寄件人");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("寄件人手机号");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("寄件地址");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("收件人");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("收件人手机号");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("收件地址");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("快递员");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+        column++;
+
+        headCell = xssfRow.createCell(column);
+        headCell.setCellValue("快递车辆");
+        headCell.setCellStyle(headCellStyle);
+        sheet.setColumnWidth(column, COLUMN_WIDTH);
+
+        int row = 1;
+        //填充数据
+        for (Sorder sorder : records) {
+            column = 0;
+            xssfRow = sheet.createRow(row);
+
+            XSSFCell cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderNo());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(OrderTypeEnum.getDesc(sorder.getOrderType()));
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderSenderName());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderSenderPhone());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderSenderPosition());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderReceiverName());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderReceiverPhone());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderReceiverPosition());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderTransName().isEmpty() ? "暂未分配快递车辆" : sorder.getOrderTransName());
+            cell.setCellStyle(cellStyle);
+            column++;
+
+            cell = xssfRow.createCell(column);
+            cell.setCellValue(sorder.getOrderCarNo().isEmpty() ? "暂未分配快递车辆" : sorder.getOrderCarNo());
+            cell.setCellStyle(cellStyle);
+            row++;
+        }
+        return workbook;
     }
 }

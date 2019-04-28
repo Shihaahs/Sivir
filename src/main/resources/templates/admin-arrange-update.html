@@ -24,10 +24,10 @@
 </head>
 <body>
 <article class="page-container">
-    <form class="form form-horizontal" id="form-admin-region-add">
+    <form class="form form-horizontal" id="form-admin-sorder-arrange">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>配送订单单号：</label>
-            <input type="text" class="input-text" style="width: 53%" readonly id="orderNo" name="orderNo">
+            <label class="form-label col-xs-4 col-sm-3" id="orderNo" style="text-align:left;width: 50%;"></label>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>揽件快递员：</label>
@@ -74,17 +74,17 @@
             radioClass: 'iradio-blue',
             increaseArea: '20%'
         });
-
-
+        var orderId;
+        var orderRegionId;
         var url = location.search; //获取url中"?“符后的字串
         if (url.indexOf("?") !== -1) { //判断是否有参数
             strs = url.split("&"); //用等号进行分隔 （因为知道只有一个参数 所以直接用等号进分隔 如果有多个参数 要用&号分隔 再用等号进行分隔）
-            var orderId = strs[0].split("=");
-            var orderRegionId = strs[1].split("=");
+            orderId = strs[0].split("=");
+            orderRegionId = strs[1].split("=");
             var sorder = {
                 "orderId": orderId[1],
-                "orderRegionId": orderRegionId
-            }; //直接弹出第一个参数 （如果有多个参数 还要进行循环的）
+                "orderRegionId": orderRegionId[1]
+            };
 
             $.ajax({
                 type: 'POST',
@@ -96,7 +96,7 @@
                 contentType: "application/json;charset=utf-8",
                 success: function (data) {
                     var sorder = data.data;
-                    $("#orderNo").val(sorder.orderNo);
+                    $("#orderNo").html(sorder.orderNo);
                 },
                 error: function (errorThrown) {
                     layer.msg('error!', {icon: 1, time: 1000});
@@ -107,7 +107,7 @@
         }
         showRegionCar(sorder);
         showRegionTrans(sorder);
-        $("#form-admin-region-add").validate({
+        $("#form-admin-sorder-arrange").validate({
             rules: {
                 countryRegion: {
                     required: true
@@ -117,20 +117,34 @@
             focusCleanup: true,
             success: "valid",
             submitHandler: function (form) {
-                if( $('#transRegion').val() === null && $("#carRegion").val() === null ){
+                var transRegion = $('#transRegion');
+                var carRegion = $('#carRegion');
+                if( transRegion.val() === "null" && carRegion.val() === "null" ){
                     layer.msg('快递员和车辆必须配置一项', {icon: 2, time: 1000});
                     return;
                 }
                 var formData = {
-                    "regionId": $("#countryRegion").val(),
-                    "regionTransId": $("#transRegion").val(),
-                    "regionCarId": $("#carRegion").val()
+                    "orderId": orderId[1],
+                    "orderRegionId": orderRegionId[1]
                 };
+                if( transRegion.val() !== "null"){
+                    formData = Object.assign(formData, {
+                        "orderTransId": transRegion.val(),
+                        "orderTransName": transRegion.find("option:selected").text()
+                    })
+                }
+                if (carRegion.val() !== "null") {
+                    formData = Object.assign(formData, {
+                        "orderCarId": carRegion.val(),
+                        "orderCarName": carRegion.find("option:selected").text()
+                    })
+                }
+
                 console.log("formData:");
                 console.log(formData);
                 $.ajax({
                     type: 'POST',
-                    url: "../../../api/admin/addRegionInfo.json",
+                    url: "../../../api/admin/arrangeSorderInfo.json",
                     data: JSON.stringify(formData),
                     cache: false,
                     async: false,
@@ -179,6 +193,16 @@
             success: function (data) {
                 //transRegion.empty();
                 var len = data.length;
+
+                if (len === 0){
+                    layer.msg('这个订单所在的区域暂无可分配的快递员', {icon: 1, time: 3000});
+                    transRegion.empty();
+                    var optionNone = document.createElement('option');
+                    optionNone.innerText = "暂无可分配的快递员";
+                    optionNone.value = null;
+                    transRegion.append(optionNone);
+                    return;
+                }
                 for (var i = 0; i < len; i++) {
                     var option = document.createElement('option');
                     option.innerText = data[i]['userName'];
@@ -204,6 +228,16 @@
             success: function (data) {
                 //carRegion.empty();
                 var len = data.length;
+                if (len === 0){
+                    layer.msg('这个订单所在的区域暂无可分配的车辆', {icon: 1, time: 3000});
+                    carRegion.empty();
+                    var optionNone = document.createElement('option');
+                    optionNone.innerText = "暂无可分配的车辆";
+                    optionNone.value = null;
+                    carRegion.append(optionNone);
+                    return;
+                }
+
                 for (var i = 0; i < len; i++) {
                     var option = document.createElement('option');
                     option.innerText = data[i]['carNo'];

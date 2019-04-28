@@ -7,6 +7,7 @@ import com.sxx.sivir.core.common.response.RegionTransCar;
 import com.sxx.sivir.core.dal.domain.Car;
 import com.sxx.sivir.core.dal.domain.Sorder;
 import com.sxx.sivir.core.dal.domain.User;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * @Package com.sxx.sivir.core.service
@@ -218,11 +219,11 @@ public interface AdminService {
     /**
      * <p> 生成业务报表 </p>
      * @param pageRequestDTO 分页参数
-     * @return PageResult<sorder>
+     * @return XSSFWorkbook excel
      * @date 2019/4/9 16:35
      *
      */
-    PageResult<Sorder> getBusinessReport(PageRequestDTO pageRequestDTO);
+    XSSFWorkbook getBusinessReport(PageRequestDTO pageRequestDTO);
 
 
 }
