@@ -44,6 +44,9 @@ public class LoginRegisterController {
     public APIResult login(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         user = loginRegisterService.checkLogin(user);
         if (null != user) {
+            if (user.getUserName().isEmpty()) {
+                return APIResult.error(LOGIN_FAILURE.getCode(), LOGIN_FAILURE.getMessage());
+            }
             request.getSession().setAttribute("user", user);
 
             log.info("login -> " + user.getUserName() + "用户已登录 ");
