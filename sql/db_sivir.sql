@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : Server
+ Source Server         : Lissandra(Local)
  Source Server Type    : MySQL
- Source Server Version : 50643
- Source Host           : 106.13.87.50:3306
+ Source Server Version : 50724
+ Source Host           : localhost:3306
  Source Schema         : db_sivir
 
  Target Server Type    : MySQL
- Target Server Version : 50643
+ Target Server Version : 50724
  File Encoding         : 65001
 
- Date: 09/04/2019 15:20:00
+ Date: 10/05/2019 13:51:16
 */
 
 SET NAMES utf8mb4;
@@ -26,12 +26,29 @@ CREATE TABLE `car` (
   `car_no` varchar(255) NOT NULL DEFAULT '' COMMENT '车牌号',
   `car_region_name` varchar(255) NOT NULL DEFAULT '' COMMENT '车所在的地区',
   `car_region_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '车所在的地区id',
-  `car_type` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '车状态；0-在库，1-在途，9-作废',
+  `car_type` tinyint(2) unsigned NOT NULL DEFAULT '3' COMMENT '车状态；0-在库，1-在途，2-维修中，3-待分配，9-作废',
   `is_delete` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除，0-存在，1-已被删除',
   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`car_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of car
+-- ----------------------------
+BEGIN;
+INSERT INTO `car` VALUES (1, '沪C12345', '上海市浦东新区', 310115, 0, 0, '2019-04-18 13:30:46', '2019-04-18 13:30:46');
+INSERT INTO `car` VALUES (2, '沪A88888', '上海市静安区', 310106, 0, 0, '2019-04-18 13:32:35', '2019-04-18 13:32:35');
+INSERT INTO `car` VALUES (3, '苏A12345', '江苏省南京市玄武区', 320102, 0, 0, '2019-04-18 13:33:24', '2019-04-18 13:33:24');
+INSERT INTO `car` VALUES (4, '苏A66666', '江苏省南京市江宁区', 320115, 0, 0, '2019-04-18 13:34:54', '2019-04-18 13:34:54');
+INSERT INTO `car` VALUES (5, '苏D11666', '江苏省常州市武进区', 320412, 0, 0, '2019-04-18 13:36:31', '2019-04-18 13:36:31');
+INSERT INTO `car` VALUES (6, '苏D88888', '江苏省常州市天宁区', 320402, 0, 0, '2019-04-18 13:37:48', '2019-04-18 13:37:48');
+INSERT INTO `car` VALUES (7, '苏E55555', '江苏省苏州市常熟市', 320581, 0, 0, '2019-04-18 13:39:41', '2019-04-18 13:39:41');
+INSERT INTO `car` VALUES (8, '苏N88888', '江苏省宿迁市宿城区', 321302, 0, 0, '2019-04-18 13:42:11', '2019-04-18 13:42:11');
+INSERT INTO `car` VALUES (9, '浙A6655Z', '陈巴尔虎旗呼伦贝尔市内蒙古自治区', 150725, 3, 0, '2019-04-26 10:50:16', '2019-04-26 15:58:08');
+INSERT INTO `car` VALUES (10, '测A009891', '洮南市白城市吉林省', 220881, 3, 0, '2019-04-26 14:47:41', '2019-04-26 15:59:38');
+INSERT INTO `car` VALUES (11, '测B123K2', '洛龙区洛阳市河南省', 410307, 3, 0, '2019-04-26 14:48:56', '2019-04-26 16:00:53');
+COMMIT;
 
 -- ----------------------------
 -- Table structure for region
@@ -3787,10 +3804,10 @@ DROP TABLE IF EXISTS `sorder`;
 CREATE TABLE `sorder` (
   `order_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键，自增长',
   `order_no` varchar(255) NOT NULL DEFAULT '' COMMENT '订单号',
-  `order_sender_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '订单发送者id',
+  `order_sender_phone` varchar(20) NOT NULL DEFAULT '0' COMMENT '订单发送者手机号',
   `order_sender_name` varchar(255) NOT NULL DEFAULT '' COMMENT '订单发送者',
   `order_sender_position` varchar(255) NOT NULL DEFAULT '' COMMENT '订单发送地',
-  `order_receiver_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '订单接收者id',
+  `order_receiver_phone` varchar(20) NOT NULL DEFAULT '0' COMMENT '订单接收者手机号',
   `order_receiver_name` varchar(255) NOT NULL DEFAULT '' COMMENT '订单接收者',
   `order_receiver_position` varchar(255) NOT NULL DEFAULT '' COMMENT '订单接收地',
   `order_trans_id` bigint(20) unsigned DEFAULT '0' COMMENT '订单快递员id',
@@ -3803,8 +3820,35 @@ CREATE TABLE `sorder` (
   `is_delete` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除，0-存在，1-已被删除',
   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-  PRIMARY KEY (`order_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `order_owner_id` bigint(10) unsigned NOT NULL DEFAULT '0' COMMENT '订单下单人id',
+  PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sorder
+-- ----------------------------
+BEGIN;
+INSERT INTO `sorder` VALUES (1, '10001', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 0, 1, '2019-04-18 10:34:47', '2019-04-24 17:48:36', 0);
+INSERT INTO `sorder` VALUES (2, '10002', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 0, 0, '2019-04-18 10:38:49', '2019-04-18 14:21:27', 0);
+INSERT INTO `sorder` VALUES (3, '10003', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 3, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 1, 1, '2019-04-18 11:34:47', '2019-04-24 11:21:01', 3);
+INSERT INTO `sorder` VALUES (4, '10004', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 4, 0, '2019-04-18 11:35:47', '2019-04-24 11:21:09', 0);
+INSERT INTO `sorder` VALUES (5, '10005', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 0, 0, '2019-04-18 12:34:47', '2019-04-18 14:21:50', 0);
+INSERT INTO `sorder` VALUES (6, '10006', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 1, 1, '2019-04-18 12:34:47', '2019-04-24 11:20:59', 3);
+INSERT INTO `sorder` VALUES (7, '10007', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 0, 1, '2019-04-18 12:34:47', '2019-04-24 17:47:18', 3);
+INSERT INTO `sorder` VALUES (8, '10008', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 1, 0, '2019-04-18 13:34:47', '2019-04-24 11:20:55', 0);
+INSERT INTO `sorder` VALUES (9, '10009', '00000000000', '赵云', '上海市静安区', '00000000000', '貂蝉', '江苏省南京市江宁区', 8, '快递员小王', 2, '沪A88888', 310106, '上海市静安区', 0, 0, '2019-04-18 13:34:49', '2019-04-18 16:45:14', 3);
+INSERT INTO `sorder` VALUES (10, '10010', '18262997715', '尚星', '江苏省宿迁市宿城区', '13338712526', '石傻傻', '江苏省苏州市常熟市', 6, '快递员小张', 8, '苏N88888', 321302, '江苏省宿迁市宿城区', 4, 0, '2019-04-18 13:35:47', '2019-04-24 11:21:08', 0);
+INSERT INTO `sorder` VALUES (11, '10011', '13338712526', '石傻傻', '江苏省苏州市常熟市', '18262997715', '尚星', '江苏省宿迁市宿城区', 3, '快递员小李', 7, '苏E55555', 320581, '江苏省苏州市常熟市', 0, 0, '2019-04-18 14:14:47', '2019-04-24 09:27:53', 3);
+INSERT INTO `sorder` VALUES (12, '10012', '18262997715', '尚星', '江苏省宿迁市宿城区', '18262996997', '宋毅', '江苏省常州市武进区', 6, '快递员小张', 8, '苏N88888', 321302, '江苏省宿迁市宿城区', 0, 0, '2019-04-18 14:20:47', '2019-04-18 14:23:20', 0);
+INSERT INTO `sorder` VALUES (13, 'SN-3-201904181629-1450', '12228712526', '石傻傻', '内蒙古自治区乌海市海南区大草原1号', '17766232895', '上星星', '山东省枣庄市薛城区老父亲桥 - 桥洞下', 15, '石傻傻不傻aaa', 0, '', 210727, '辽宁省锦州市义县', 0, 0, '2019-04-18 16:29:54', '2019-04-28 13:39:27', 3);
+INSERT INTO `sorder` VALUES (14, 'SN-3-201904181638-2AAA', '12312313113', '唐三三', '辽宁省锦州市义县幸福小区2幢2单元101', '12312313132', '上星星', '内蒙古自治区赤峰市松山区大拇指公司', 0, '', 0, '', 210727, '辽宁省锦州市义县', 0, 0, '2019-04-18 16:39:40', '2019-04-18 16:39:40', 3);
+INSERT INTO `sorder` VALUES (15, 'SN-111-201904181641-A011', '12313123123', '龙贴贴', '福建省宁德市周宁县啊啊啊啊', '19874911312', '张三', '湖北省黄冈市浠水县A在 啥的', 3, '', 0, '', 350925, '福建省宁德市周宁县', 4, 0, '2019-04-18 16:41:00', '2019-04-24 11:21:07', 3);
+INSERT INTO `sorder` VALUES (16, 'SN-3-201904181655-5D25', '12312313113', 'qqq', '河北省邯郸市复兴区123', '12312313132', 'www', '山西省晋中市和顺县321', 3, '', 0, '', 130404, '河北省邯郸市复兴区', 1, 0, '2019-04-18 16:55:04', '2019-04-24 11:21:02', 3);
+INSERT INTO `sorder` VALUES (17, 'SN-3-201904181717-B8B7', '12312313113', '唐三三', '河北省秦皇岛市北戴河区123', '12312313132', '上星星', '湖北省吕梁市交口县qqq', 0, '', 0, '', 130304, '河北省秦皇岛市北戴河区', 0, 0, '2019-04-18 17:17:10', '2019-04-18 17:17:10', 3);
+INSERT INTO `sorder` VALUES (18, 'SN-3-201904181744-74CE', '12312313113', 'cad', '内蒙古自治区呼和浩特市土默特左旗江苏常熟海虞', '12312313132', '321', '辽宁省鞍山市千山区江苏宿迁宿豫', 3, '', 0, '', 150121, '内蒙古自治区呼和浩特市土默特左旗', 5, 0, '2019-04-18 17:44:35', '2019-04-24 11:22:19', 3);
+INSERT INTO `sorder` VALUES (19, 'SN-3-201904181747-4E09', '12312313113', 'lll', '山东省威海市文登市lll', '12312313132', 'rrr', '内蒙古自治区通辽市开鲁县rrr', 3, '', 0, '', 371081, '山东省威海市文登市', 1, 1, '2019-04-18 17:47:36', '2019-04-24 11:21:04', 3);
+INSERT INTO `sorder` VALUES (21, 'SN-3-201904191550-7F47', '22222222222', 'iii', '天津天津市河西区ooo', '33333333333', 'ppp', '辽宁省抚顺市望花区lll', 0, '', 0, '', 120103, '天津天津市河西区', 4, 0, '2019-04-19 15:50:01', '2019-04-24 11:21:05', 3);
+COMMIT;
 
 -- ----------------------------
 -- Table structure for user
@@ -3819,18 +3863,32 @@ CREATE TABLE `user` (
   `is_delete` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '逻辑删除，0-存在，1-已被删除',
   `gmt_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  `trans_region_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '快递员所在区域id',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` VALUES (1, 'admin', '111', '123', 0, 0, '2019-01-29 13:59:09', '2019-01-30 17:20:47');
-INSERT INTO `user` VALUES (2, '石傻傻', '111', '13338712526', 2, 0, '2019-02-03 21:26:35', '2019-04-01 16:57:51');
-INSERT INTO `user` VALUES (3, '江南皮革厂', '111', '12345678900', 1, 0, '2019-02-03 21:36:09', '2019-02-03 21:36:09');
-INSERT INTO `user` VALUES (4, '阿邦', '112211', '12345678912', 2, 0, '2019-02-18 14:07:10', '2019-02-19 16:08:11');
-INSERT INTO `user` VALUES (5, '杰杰', '654321', '39923452822', 2, 0, '2019-02-18 14:07:10', '2019-04-01 16:57:43');
+INSERT INTO `user` VALUES (1, 'admin', '111', '123', 4, 0, '2019-01-29 13:59:09', '2019-04-28 17:10:45', 0);
+INSERT INTO `user` VALUES (2, '石傻傻', '111123', '13338712526', 2, 0, '2019-02-03 21:26:35', '2019-04-18 13:12:55', 0);
+INSERT INTO `user` VALUES (3, '江南皮革厂', '111111', '12345678900', 1, 0, '2019-02-03 21:36:09', '2019-04-26 13:42:12', 1);
+INSERT INTO `user` VALUES (4, '阿邦', '111123', '12345678901', 2, 0, '2019-02-18 14:07:10', '2019-04-18 13:13:14', 0);
+INSERT INTO `user` VALUES (5, '杰杰', '111123', '39923452822', 2, 0, '2019-02-18 14:07:10', '2019-04-18 13:14:05', 0);
+INSERT INTO `user` VALUES (6, '快递员小张', '111111', '12345678911', 1, 0, '2019-04-18 13:06:11', '2019-04-26 15:13:10', 130321);
+INSERT INTO `user` VALUES (7, '快递员小李', '111111', '12345678912', 1, 0, '2019-04-18 13:09:13', '2019-04-26 13:42:03', 1);
+INSERT INTO `user` VALUES (8, '快递员小王', '111111', '12345678913', 1, 0, '2019-04-18 13:11:57', '2019-04-26 11:42:53', 320102);
+INSERT INTO `user` VALUES (9, '快递员小吴', '111111', '12345678914', 1, 0, '2019-04-18 13:12:44', '2019-04-26 11:42:35', 320115);
+INSERT INTO `user` VALUES (10, '尚星', '123123', '18262997715', 2, 0, '2019-04-18 13:14:43', '2019-04-18 13:14:43', 0);
+INSERT INTO `user` VALUES (11, '宋毅', '123123', '18262996997', 2, 0, '2019-04-18 13:15:04', '2019-04-18 13:15:04', 0);
+INSERT INTO `user` VALUES (12, '石佳龙', '123123', '15295130857', 2, 0, '2019-04-18 13:15:51', '2019-04-18 13:15:51', 0);
+INSERT INTO `user` VALUES (13, '赵云', '000000', '00000000000', 2, 0, '2019-04-18 13:16:14', '2019-04-18 13:16:14', 0);
+INSERT INTO `user` VALUES (14, '貂蝉', '000000', '00000000000', 2, 0, '2019-04-18 13:17:07', '2019-04-18 13:17:07', 0);
+INSERT INTO `user` VALUES (15, '石傻傻不傻aaa', '213123', '18801503057', 1, 0, '2019-04-24 16:06:00', '2019-04-28 11:37:14', 210727);
+INSERT INTO `user` VALUES (16, '王五', '21323123', '12312312312', 3, 1, '2019-04-24 16:32:59', '2019-04-24 16:34:50', 0);
+INSERT INTO `user` VALUES (17, '1234', '123', '1234', 1, 0, '2019-04-28 16:50:39', '2019-04-28 16:54:52', 1);
+INSERT INTO `user` VALUES (18, '热热二', '123123', '123123', 0, 0, '2019-04-28 16:53:36', '2019-04-28 16:53:36', 0);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -10,7 +10,7 @@ public class WebMVCConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        //将 /front/src/login/** 的请求 映射到 /front/src/login/下
+
         registry.addResourceHandler("/static/**")
                 .addResourceLocations("classpath:/static/");
 
