@@ -78,10 +78,13 @@
 
     //加载table数据
     function initTable() {
+
+        var user = JSON.parse(localStorage.getItem("user"));
+
         var pageRequestDTO = {
             pageSize: 100,
             pageCurrent: 1,
-            userId: 3
+            userId: user.userId
         };
 
         table = $("#table").DataTable({
@@ -159,7 +162,7 @@
             maxmin: true,
             shade: 0.4,
             title: "新增订单",
-            content: '../../api/to/customer-sorder-add',
+            content: '../../api/to/customer-sorder-add'
         });
     }
 

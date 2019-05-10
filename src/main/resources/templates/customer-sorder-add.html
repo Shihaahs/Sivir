@@ -172,7 +172,10 @@
                 var receivedRegion = $('#provinceReceived').find("option:selected").text() + $('#cityReceived').find("option:selected").text() + $('#countryReceived').find("option:selected").text();
                 formData.orderSenderPosition = sendRegion + formData.orderSenderPosition;
                 formData.orderReceiverPosition = receivedRegion + formData.orderReceiverPosition;
-                formData = Object.assign(formData, currentRegion, {"orderOwnerId": "3"});
+
+                var user = JSON.parse(localStorage.getItem("user"));
+
+                formData = Object.assign(formData, currentRegion, {"orderOwnerId": user.userId});
 
                 $.ajax({
                     type: 'POST',

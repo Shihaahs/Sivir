@@ -70,12 +70,13 @@
 
     //加载table数据
     function initTable() {
+        var user = JSON.parse(localStorage.getItem("user"));
+
         var pageRequestDTO = {
             pageSize: 100,
             pageCurrent: 1,
-            userId: 3
+            userId: user.userId
         };
-
         table = $("#table").DataTable({
             "aaSorting": [[0, "asc"]],//属性'aaSorting':初始化表格的时候，选择以怎样的规则排序 asc - 顺， desc - 逆
             "aoColumnDefs": [
