@@ -107,12 +107,12 @@ public class ToController {
 
     @RequestMapping("/api/to/admin-region-add")
     public String toAdminAddRegion() {
-        return "admin-region-update";
+        return "admin-region-add";
     }
 
     @RequestMapping("/api/to/admin-region-update")
     public String toAdminUpdateRegion() {
-        return "admin-region-update";
+        return "admin-region-add";
     }
 
 

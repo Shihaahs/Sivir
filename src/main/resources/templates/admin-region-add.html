@@ -29,7 +29,7 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>配置区域：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <!--省份选择-->
-                <select id="provinceRegion" onchange="showCity($('#cityRegion'))" class="select"
+                <select id="provinceRegion" onchange="showCity($('#cityRegion'),$('#countryRegion'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
                     <option selected disabled hidden>请选择省份</option>
                 </select>
@@ -187,7 +187,7 @@
             dataType: "json",
             contentType: "application/json;charset=utf-8",
             success: function (data) {
-                //carRegion.empty();
+                carRegion.empty();
                 var len = data.length;
                 for (var i = 0; i < len; i++) {
                     var option = document.createElement('option');

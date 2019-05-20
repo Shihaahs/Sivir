@@ -50,19 +50,19 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>寄件地址：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <!--省份选择-->
-                <select id="provinceSend" onchange="showCity($('#citySend'))" class="select" onclick="showProvince($('#provinceSend'))"
+                <select id="provinceSend" onchange="showCity($('#citySend'),$('#countrySend'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择省份</option>
+                    <option selected disabled hidden>请选择省份</option>
                 </select>
                 <!--城市选择-->
                 <select id="citySend" onchange="showCountry($('#countrySend'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择城市</option>
+                    <option selected disabled hidden>请选择城市</option>
                 </select>
                 <!--县区选择-->
                 <select id="countrySend" onchange="bindRegion()" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择县区</option>
+                    <option selected disabled hidden>请选择县区</option>
                 </select>
                 <input type="text" class="input-text" value="" placeholder="请输入寄件人地址" id="orderSenderPosition"
                        name="orderSenderPosition" style="width: 46%;height:33px ;display: inline-block; float: right">
@@ -88,19 +88,19 @@
             <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>收件地址：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <!--省份选择-->
-                <select id="provinceReceived" onchange="showCity($('#cityReceived'))" class="select" onclick="showProvince($('#provinceReceived'))"
+                <select id="provinceReceived" onchange="showCityTwo($('#cityReceived'),$('#countryReceived'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择省份</option>
+                    <option selected disabled hidden>请选择省份</option>
                 </select>
                 <!--城市选择-->
-                <select id="cityReceived" onchange="showCountry($('#countryReceived'))" class="select"
+                <select id="cityReceived" onchange="showCountryTwo($('#countryReceived'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择城市</option>
+                    <option selected disabled hidden>请选择城市</option>
                 </select>
                 <!--县区选择-->
                 <select id="countryReceived" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择县区</option>
+                    <option selected disabled hidden>请选择县区</option>
                 </select>
                 <input type="text" class="input-text" placeholder="请输入收件地址" id="orderReceiverPosition"
                        name="orderReceiverPosition" style="width: 46%;height:33px ;display: inline-block; float: right">
@@ -127,7 +127,16 @@
 <script type="text/javascript" src="/static/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript" src="/static/fillFrom.js"></script>
 <script type="text/javascript">
+
+    var currentRegion = {
+        orderRegionName: '',
+        orderRegionId: ''
+    };
+
     $(function () {
+
+        showProvince($("#provinceSend"));
+        showProvinceTwo($("#provinceReceived"));
 
         var url = location.search; //获取url中"?“符后的字串
         if (url.indexOf("?") !== -1) { //判断是否有参数
@@ -206,7 +215,7 @@
                 var receivedRegion = $('#provinceReceived').find("option:selected").text() + $('#cityReceived').find("option:selected").text() + $('#countryReceived').find("option:selected").text();
                 formData.orderSenderPosition = sendRegion + formData.orderSenderPosition;
                 formData.orderReceiverPosition = receivedRegion + formData.orderReceiverPosition;
-                formData = Object.assign(formData, currentRegion, {"orderOwnerId": "3"});
+                formData = Object.assign(formData, currentRegion);
 
                 console.log(formData);
                 $.ajax({
@@ -238,6 +247,14 @@
             }
         });
     });
+
+    function bindRegion() {
+        currentRegion.orderRegionName = $('#provinceSend').find("option:selected").text() +
+            $('#citySend').find("option:selected").text() +
+            $('#countrySend').find("option:selected").text();
+
+        currentRegion.orderRegionId= $('#countrySend').val();
+    }
 
 </script>
 </body>

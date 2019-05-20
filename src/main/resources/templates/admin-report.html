@@ -39,19 +39,19 @@
 		</span>
 			<div class="formControls col-xs-8 col-sm-9">
                 <!--省份选择-->
-                <select id="provinceReport" onchange="showCity($('#cityReport'))" class="select" onclick="showProvince($('#provinceReport'))"
+                <select id="provinceReport" onchange="showCity($('#cityReport'),$('#countryReport'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择省份</option>
+                    <option selected disabled hidden>请选择省份</option>
                 </select>
                 <!--城市选择-->
                 <select id="cityReport" onchange="showCountry($('#countryReport'))" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择城市</option>
+                    <option selected disabled hidden>请选择城市</option>
                 </select>
                 <!--县区选择-->
-                <select id="countryReport" onchange="changePageDTO()" class="select"
+                <select id="countryReport" onchange="" class="select"
                         style="width: 17%;height:32px ;display: inline-block">
-                    <option>请选择县区</option>
+                    <option selected disabled hidden>请选择县区</option>
                 </select>
             </div>
 
@@ -94,7 +94,10 @@
         pageCurrent: 1
     };
     //页面加载后自动请求一次
-    $(document).ready(initTable(pageRequestDTO));
+    $(document).ready(
+        initTable(pageRequestDTO),
+        showProvince($("#provinceReport"))
+    );
 
     //加载table数据
     function initTable(pageRequestDTO) {
@@ -160,19 +163,6 @@
             ]
         });
 
-    }
-
-    function changePageDTO() {
-        /*pageRequestDTO = {
-            pageSize: pageRequestDTO.pageSize,
-            pageCurrent: pageRequestDTO.pageCurrent
-        };
-        var region = {
-            "regionId" : $("#countryReport").val()
-        };
-        pageRequestDTO = Object.assign(pageRequestDTO, region);
-        console.log(pageRequestDTO);
-        initTable(pageRequestDTO);*/
     }
 
     //下载报表

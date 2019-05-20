@@ -129,7 +129,7 @@ var appendOperation = function ($form, data) {
         var orderId = data[i]["orderId"];
         console.log(orderId);
         var lastTr = $form.find('tbody').find('tr').eq(i).find('td:last');
-        var td = '<a style="text-decoration:none" class="ml-5" onClick="deleteCustomerSorder(this,'+ orderId +')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>';
+        var td = '<a style="text-decoration:none" class="ml-5" onClick="deleteCustomerSorder(this,' + orderId + ')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a>';
 
         lastTr.attr('class', "f-14 td-manage text-c");
         lastTr.html(td);
@@ -169,21 +169,22 @@ function form2JsonObject(formId) {
 var orderSenderPosition = $('#orderSenderPosition');
 //select 对象
 var province;
+var provinceTwo;
 var city;
+var cityTwo;
 var country;
+var countryTwo;
 
 //省市区数据
 var provinceData;
 var cityData;
+var cityTwoData;
 var countryData;
+var countryTwoData;
 
 /*加载省份列表*/
 function showProvince($province) {
     province = $province;
-    if (province.find("option:last").index() > 1) {
-        province.empty();
-        province.append("<option >请选择省份</option>")
-    }
     //初始化加载
     if (!provinceData || provinceData === null || provinceData === '') {
         $.ajax({
@@ -210,14 +211,30 @@ function showProvince($province) {
     }
 }
 
+function showProvinceTwo($province) {
+    provinceTwo = $province;
+
+    var len = provinceData.length;
+    for (var i = 0; i < len; i++) {
+        var provOpt = document.createElement('option');
+        provOpt.innerText = provinceData[i]['regionName'];
+        provOpt.value = provinceData[i]['regionId'];
+        provinceTwo.append(provOpt);
+    }
+}
+
+
 /*加载市列表*/
-function showCity($city) {
+function showCity($city,$country) {
     city = $city;
+    country = $country;
 
-    if (city.find("option:last").index() > 1) {
-        city.empty();
-        city.append("<option >请选择城市</option>");
+    city.empty();
+    city.append("<option selected disabled hidden >请选择城市</option>");
 
+    if (country.find("option:last").index() > 1) {
+        country.empty();
+        country.append("<option  selected disabled hidden>请选择县区</option>")
     }
     var provinceId = province.val();
     var region = {
@@ -231,6 +248,7 @@ function showCity($city) {
         dataType: "json",
         contentType: "application/json;charset=utf-8",
         success: function (result) {
+            cityData = '';
             cityData = result;
         },
         error: function (errorThrown) {
@@ -246,15 +264,54 @@ function showCity($city) {
         city.append(cityOpt);
     }
 }
+function showCityTwo($city,$country) {
+    cityTwo = $city;
+    countryTwo = $country;
+
+    cityTwo.empty();
+    cityTwo.append("<option selected disabled hidden >请选择城市</option>");
+
+    if (countryTwo.find("option:last").index() > 1) {
+        countryTwo.empty();
+        countryTwo.append("<option  selected disabled hidden>请选择县区</option>")
+    }
+    var provinceId = provinceTwo.val();
+    var region = {
+        "regionId": provinceId
+    };
+    $.ajax({
+        type: 'POST',
+        url: "../../public/provideCityData.json",
+        data: JSON.stringify(region),
+        async: false,
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        success: function (result) {
+            cityTwoData = '';
+            cityTwoData = result;
+        },
+        error: function (errorThrown) {
+            layer.msg('provideData Error!', {icon: 1, time: 1000});
+        }
+    });
+
+    var len = cityTwoData.length;
+    for (var i = 0; i < len; i++) {
+        var cityOpt = document.createElement('option');
+        cityOpt.innerText = cityTwoData[i]['regionName'];
+        cityOpt.value = cityTwoData[i]['regionId'];
+        cityTwo.append(cityOpt);
+    }
+}
+
 
 /*加载区县列表*/
 function showCountry($country) {
     country = $country;
 
-    if (country.find("option:last").index() > 1) {
-        country.empty();
-        country.append("<option >请选择县区</option>")
-    }
+    country.empty();
+    country.append("<option  selected disabled hidden>请选择县区</option>");
+
     var cityId = city.val();
     var region = {
         "regionId": cityId
@@ -267,6 +324,7 @@ function showCountry($country) {
         dataType: "json",
         contentType: "application/json;charset=utf-8",
         success: function (result) {
+            countryData = '';
             countryData = result;
         },
         error: function (errorThrown) {
@@ -279,6 +337,39 @@ function showCountry($country) {
         countryOpt.innerText = countryData[i]['regionName'];
         countryOpt.value = countryData[i]['regionId'];
         country.append(countryOpt);
+    }
+}
+function showCountryTwo($country) {
+    countryTwo = $country;
+
+    countryTwo.empty();
+    countryTwo.append("<option  selected disabled hidden>请选择县区</option>");
+
+    var cityId = cityTwo.val();
+    var region = {
+        "regionId": cityId
+    };
+    $.ajax({
+        type: 'POST',
+        url: "../../public/provideCountryData.json",
+        async: false,
+        data: JSON.stringify(region),
+        dataType: "json",
+        contentType: "application/json;charset=utf-8",
+        success: function (result) {
+            countryTwoData = '';
+            countryTwoData = result;
+        },
+        error: function (errorThrown) {
+            layer.msg('provideData Error!', {icon: 1, time: 1000});
+        }
+    });
+    var len = countryTwoData.length;
+    for (var i = 0; i < len; i++) {
+        var countryOpt = document.createElement('option');
+        countryOpt.innerText = countryTwoData[i]['regionName'];
+        countryOpt.value = countryTwoData[i]['regionId'];
+        countryTwo.append(countryOpt);
     }
 }
 

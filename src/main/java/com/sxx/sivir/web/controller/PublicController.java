@@ -74,10 +74,10 @@ public class PublicController {
     }
 
     @RequestMapping(PROVIDE_TRANS_REGION_DATA)
-    public List<User> provideTransRegionData(@RequestBody Sorder sorder){
+    public List<User> provideTransRegionData(@RequestBody(required = false)  Sorder sorder){
         List<User> transRegionList;
 
-        if (Objects.nonNull(sorder.getOrderId()) && Objects.nonNull(sorder.getOrderRegionId()) && !sorder.getOrderRegionId().equals(0L)) {
+        if (Objects.nonNull(sorder) &&Objects.nonNull(sorder.getOrderId()) && Objects.nonNull(sorder.getOrderRegionId()) && !sorder.getOrderRegionId().equals(0L)) {
             transRegionList = userManager.selectList(new EntityWrapper<User>()
                     .eq("trans_region_id", sorder.getOrderRegionId()));
         } else {
@@ -89,11 +89,11 @@ public class PublicController {
 
 
     @RequestMapping(PROVIDE_CAR_REGION_DATA)
-    public List<Car> provideCarRegionData(@RequestBody Sorder sorder){
+    public List<Car> provideCarRegionData(@RequestBody(required = false) Sorder sorder){
         List<Car> carRegionList;
         //提供可分配的车辆
 
-        if (Objects.nonNull(sorder.getOrderId()) && Objects.nonNull(sorder.getOrderRegionId()) && !sorder.getOrderRegionId().equals(0L)) {
+        if (Objects.nonNull(sorder) &&Objects.nonNull(sorder.getOrderId()) && Objects.nonNull(sorder.getOrderRegionId()) && !sorder.getOrderRegionId().equals(0L)) {
             carRegionList = carManager.selectList(new EntityWrapper<Car>()
                     .eq("car_type", CarTypeEnum.IN_WAREHOUSE.getCode())
                     .eq("car_region_id", sorder.getOrderRegionId()));

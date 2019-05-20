@@ -16,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +52,13 @@ public class CustomerServiceImpl implements CustomerService {
                 new EntityWrapper<Sorder>()
                         .eq("order_owner_id", pageRequestDTO.getUserId()))
                 .stream().map(Sorder::getOrderId).collect(toList());
+
+        if (CollectionUtils.isEmpty(orderIds)) {
+            return new PageResult<>(pageRequestDTO.getPageSize(),
+                    pageRequestDTO.getPageCurrent(),
+                    0,
+                    Collections.emptyList());
+        }
         Wrapper<Sorder> wrapper = conditionAdapter(pageRequestDTO);
         wrapper.in("order_id", orderIds);
         //分页查询
