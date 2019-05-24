@@ -210,7 +210,7 @@
             success: "valid",
             submitHandler: function (form) {
 
-                var formData = form2JsonObject("form-add-sorder-update");
+                var formData = form2JsonObject("form-admin-sorder-update");
                 var sendRegion = $('#provinceSend').find("option:selected").text() + $('#citySend').find("option:selected").text() + $('#countrySend').find("option:selected").text();
                 var receivedRegion = $('#provinceReceived').find("option:selected").text() + $('#cityReceived').find("option:selected").text() + $('#countryReceived').find("option:selected").text();
                 formData.orderSenderPosition = sendRegion + formData.orderSenderPosition;

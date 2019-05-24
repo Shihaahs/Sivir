@@ -94,6 +94,11 @@ public class AdminController {
         return APIResult.ok(adminService.getAllRegionInfo(pageRequestDTO));
     }
 
+    @RequestMapping(value = ADMIN_GET_REGION_INFO_BY_ID, method = RequestMethod.POST)
+    public APIResult<RegionInfo> getRegionInfoById(@RequestParam Long id) {
+        return APIResult.ok(adminService.getRegionInfoById(id));
+    }
+
     @RequestMapping(value = ADMIN_ADD_REGION_INFO, method = RequestMethod.POST)
     public APIResult<Integer> addRegionTransCar(@RequestBody RegionTransCar regionTransCar) {
         return APIResult.ok(adminService.addRegionTransCar(regionTransCar));

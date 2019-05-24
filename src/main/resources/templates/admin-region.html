@@ -46,9 +46,9 @@
                 <th width="30">序号</th>
                 <th width="120">快递员/车辆</th>
                 <th width="80">状态</th>
-                <th width="80">区域位置</th>
-                <th width="250">录入/修改时间</th>
-                <th width="80" id="regionContentType">调配内容</th>
+                <th width="130">区域位置</th>
+                <th width="200">录入/修改时间</th>
+                <th width="80" >调配内容</th>
                 <th width="30">操作</th>
             </tr>
             </thead>
@@ -145,19 +145,21 @@
     }
 
     function deleteAdminRegion(obj, id) {
-        var regionContentType = $("#regionContentType").html();
+        var regionContentType = $(obj).parent().parent().find("td").eq(5).text();
+        console.log(regionContentType);
+
         var regionCarTrans;
-        if (regionContentType === 0) {
+        if (regionContentType === "快递员") {
             regionCarTrans = {
                 "regionTransId": id
             };
         }
-        if (regionContentType === 1) {
+        if (regionContentType === "快递车辆") {
             regionCarTrans = {
                 "regionCarId": id
             };
         }
-        console.log(regionContentType);
+
         layer.confirm('确认要解绑吗？', function () {
             $.ajax({
                 type: 'POST',
@@ -168,11 +170,11 @@
                 success: function (data) {
                     $(obj).parents("tr").remove();
                     $("#refresh i").click();
-                    if (regionContentType === 0) {
+                    if (regionContentType === "快递员") {
                         layer.msg('快递员已解绑!', {icon: 1, time: 1000});
 
                     }
-                    if (regionContentType === 1) {
+                    if (regionContentType === "快递车辆") {
                         layer.msg('车辆已解绑!', {icon: 1, time: 1000});
 
                     }

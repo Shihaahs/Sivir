@@ -226,4 +226,5 @@ public interface AdminService {
     XSSFWorkbook getBusinessReport(PageRequestDTO pageRequestDTO);
 
 
+    RegionInfo getRegionInfoById(Long id);
 }

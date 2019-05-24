@@ -64,6 +64,7 @@ public class SivirURL {
     public static final String ADMIN_UPDATE_REGION_INFO = "/api/admin/updateRegionInfo.json";
 
     public static final String ADMIN_GET_ALL_REGION_INFO = "/api/admin/getAllRegionInfo.json";
+    public static final String ADMIN_GET_REGION_INFO_BY_ID = "/api/admin/getRegionInfoById.json";
 
     /**
      * 管理员接口 - 配送管理 - 给订单安排运输的快递员和车辆

@@ -58,6 +58,11 @@ public class Sorder extends BaseModel {
     @TableField("order_receiver_position")
     private String orderReceiverPosition;
     /**
+     * 订单接收地id
+     */
+    @TableField("order_receiver_position_id")
+    private Long orderReceiverPositionId;
+    /**
      * 订单快递员id
      */
     @TableField("order_trans_id")

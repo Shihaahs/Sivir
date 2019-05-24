@@ -155,12 +155,8 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public Integer addRegionTransCar(RegionTransCar regionTransCar) {
-        if (null == regionTransCar.getRegionId() || 0L == regionTransCar.getRegionId()) {
-            log.error("AdminServiceImpl - addRegionTransCar -> 区域管理的区域id为空");
-            return null;
-        }
         int row = 0;
-        if (null != regionTransCar.getRegionCarId() && 0L != regionTransCar.getRegionCarId()) {
+        if (null != regionTransCar.getRegionCarId()) {
             Car car = new Car();
             car.setCarId(regionTransCar.getRegionCarId());
             car.setCarRegionId(regionTransCar.getRegionId());
@@ -173,7 +169,7 @@ public class AdminServiceImpl implements AdminService {
                 return 2;
             }
         }
-        if (null != regionTransCar.getRegionTransId() && 0L != regionTransCar.getRegionTransId()) {
+        if (null != regionTransCar.getRegionTransId() ) {
             User trans = new User();
             trans.setUserId(regionTransCar.getRegionTransId());
             trans.setTransRegionId(regionTransCar.getRegionId());
@@ -189,12 +185,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Integer deleteRegionTransCar(RegionTransCar regionTransCar) {
-        if (null == regionTransCar.getRegionId() || 0L == regionTransCar.getRegionId()) {
-            log.error("AdminServiceImpl - deleteRegionTransCar -> 区域管理的区域id为空");
-            return null;
-        }
         int row = 0;
-        if (null != regionTransCar.getRegionCarId() && 0L == regionTransCar.getRegionCarId()) {
+        if (null != regionTransCar.getRegionCarId()) {
             Car car = new Car();
             car.setCarId(regionTransCar.getRegionCarId());
             car.setCarRegionId(0L);
@@ -205,7 +197,7 @@ public class AdminServiceImpl implements AdminService {
                 return null;
             }
         }
-        if (null != regionTransCar.getRegionTransId() && 0L == regionTransCar.getRegionTransId()) {
+        if (null != regionTransCar.getRegionTransId()) {
             User trans = new User();
             trans.setUserId(regionTransCar.getRegionTransId());
             trans.setTransRegionId(0L);
@@ -242,11 +234,15 @@ public class AdminServiceImpl implements AdminService {
             List<User> transList = userManager.selectList(new EntityWrapper<User>().eq("trans_region_id", regionId));
             //只要分配了车或者人 就加载出来
             if (0 != carList.size() || 0 != transList.size()) {
-                RegionInfo regionInfo = new RegionInfo();
-                regionInfo.setRegionId(regionId);
-                regionInfo.setRegionName(region.getRegionName());
                 if (0 != carList.size()) {
                     //车辆信息
+                    RegionInfo regionInfo = new RegionInfo();
+                    regionInfo.setRegionId(regionId);
+                    if (regionId.equals(1L)) {
+                        regionInfo.setRegionName("全部省份");
+                    } else {
+                        regionInfo.setRegionName(regionManager.getAllRegionNameByRegionId(regionId));
+                    }
                     regionInfo.setRegionContentType(1);
                     carList.forEach( car -> {
                         regionInfo.setRegionContent(car.getCarNo());
@@ -259,6 +255,13 @@ public class AdminServiceImpl implements AdminService {
                 }
                 if (0 != transList.size()) {
                     //快递员信息
+                    RegionInfo regionInfo = new RegionInfo();
+                    regionInfo.setRegionId(regionId);
+                    if (regionId.equals(1L)) {
+                        regionInfo.setRegionName("全部省份");
+                    } else {
+                        regionInfo.setRegionName(regionManager.getAllRegionNameByRegionId(regionId));
+                    }
                     regionInfo.setRegionContentType(0);
                     transList.forEach( trans -> {
                         regionInfo.setRegionContent(trans.getUserName());
@@ -276,6 +279,10 @@ public class AdminServiceImpl implements AdminService {
                 pageRequestDTO.getPageCurrent(),
                 regionInfoList.size(),
                 regionInfoList);
+    }
+    @Override
+    public RegionInfo getRegionInfoById(Long id) {
+        return null;
     }
 
 
@@ -350,7 +357,7 @@ public class AdminServiceImpl implements AdminService {
         Wrapper<Sorder> wrapper = conditionAdapter(pageRequestDTO);
         //待揽件 和 配送中 需要 安排快递员
         //wrapper.in("order_type", new Integer[]{1, 4});
-        wrapper.eq("order_type", OrderTypeEnum.WAIT_GET.getCode());
+        wrapper.in("order_type", new Integer[]{0,4});
 
         //分页条件查询
         Page<Sorder> sorderPage = sorderManager.selectPage(
@@ -378,6 +385,7 @@ public class AdminServiceImpl implements AdminService {
                 initPage(pageRequestDTO), wrapper);
         return createExcelInfo(sorderPage.getRecords());
     }
+
 
     private XSSFWorkbook createExcelInfo(List<Sorder> records) {
 

@@ -124,10 +124,11 @@
 <script type="text/javascript">
 
     showProvince($("#provinceSend"));
-    showProvince($("#provinceReceived"));
+    showProvinceTwo($("#provinceReceived"));
     var currentRegion = {
         orderRegionName: '',
-        orderRegionId: ''
+        orderRegionId: '',
+        orderReceiverPositionId: ''
     };
 
     $(function () {
@@ -213,6 +214,7 @@
             $('#countrySend').find("option:selected").text();
 
         currentRegion.orderRegionId= $('#countrySend').val();
+        currentRegion.orderReceiverPositionId = $('#countryReceived').val();
     }
 
 </script>

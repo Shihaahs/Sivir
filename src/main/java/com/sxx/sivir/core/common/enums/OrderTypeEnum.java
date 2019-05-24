@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @Date: 2019/4/18 10:48
  * @Copyright: 2018-2099  ShangXing - Sivir All rights reserved.
  * @Description: 订单类型枚举
- * 0-待揽件，1-已通知快递员，2-快递员已揽件，3-在途，4-配送中，5-已完成，9-作废
+ * 0-待揽件，1-已通知快递员，2-快递员已揽件，3-在途，4-待配送，5-配送中，6-已完成，9-作废
  */
 public enum OrderTypeEnum {
 
@@ -19,8 +19,9 @@ public enum OrderTypeEnum {
     NOTICE_TRANS(1,"已通知快递员"),
     HAS_GOTTEN(2,"快递员已揽件"),
     ON_WAY(3,"在途"),
-    SENDING(4, "配送中"),
-    DONE(5, "已完成"),
+    WAIT_POST(4,"待配送"),
+    SENDING(5, "配送中"),
+    DONE(6, "已完成"),
     OBSOLETED(9, "作废");
 
     @Getter
